@@ -59,7 +59,7 @@ set_global_assignment -name FITTER_EFFORT FAST_FIT
 set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC OFF
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION OFF
 set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING OFF
-set_global_assignment -name OPTIMIZE_HOLD_TIMING OFF
+set_global_assignment -name OPTIMIZE_HOLD_TIMING "All Paths"
 set_location_assignment PIN_AF14 -to CLOCK_50
 set_location_assignment PIN_AJ4 -to resetN_pin
 set_location_assignment PIN_AK4 -to KEY[1]
