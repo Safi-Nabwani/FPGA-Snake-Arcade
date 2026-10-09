@@ -1,5 +1,5 @@
 Assembler report for Lab1Demo
-Fri Oct 09 18:40:14 2026
+Sat Oct 10 00:23:35 2026
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -39,7 +39,7 @@ agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Fri Oct 09 18:40:14 2026 ;
+; Assembler Status      ; Successful - Sat Oct 10 00:23:35 2026 ;
 ; Revision Name         ; Lab1Demo                              ;
 ; Top-level Entity Name ; TOP_VGA_DEMO                          ;
 ; Family                ; Cyclone V                             ;
@@ -106,8 +106,8 @@ agreement for further details.
 +----------------+-----------------------------------------------------------------------------------+
 ; Option         ; Setting                                                                           ;
 +----------------+-----------------------------------------------------------------------------------+
-; JTAG usercode  ; 0x044A3F7E                                                                        ;
-; Checksum       ; 0x044A3F7E                                                                        ;
+; JTAG usercode  ; 0x036085AE                                                                        ;
+; Checksum       ; 0x036085AE                                                                        ;
 +----------------+-----------------------------------------------------------------------------------+
 
 
@@ -131,13 +131,13 @@ Info: Running Quartus Prime Assembler
     Info: devices manufactured by Intel and sold by Intel or its 
     Info: authorized distributors.  Please refer to the applicable 
     Info: agreement for further details.
-    Info: Processing started: Fri Oct 09 18:40:05 2026
+    Info: Processing started: Sat Oct 10 00:23:06 2026
 Info: Command: quartus_asm Lab1Demo -c Lab1Demo --read_settings_files=on --write_settings_files=off
 Info (115030): Assembler is generating device programming files
 Info: Quartus Prime Assembler was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 4945 megabytes
-    Info: Processing ended: Fri Oct 09 18:40:14 2026
-    Info: Elapsed time: 00:00:09
-    Info: Total CPU time (on all processors): 00:00:09
+    Info: Peak virtual memory: 4944 megabytes
+    Info: Processing ended: Sat Oct 10 00:23:36 2026
+    Info: Elapsed time: 00:00:30
+    Info: Total CPU time (on all processors): 00:00:20
 
 

@@ -12,11 +12,11 @@ module ScoreConstants (
 
 //------------- Score Number Positions -----------
 
-localparam int SCORE_X      = 164;
-localparam int SCORE_Y      = 12;
+localparam int SCORE_X      = 48;
+localparam int SCORE_Y      = 64;
 
-localparam int HIGH_SCORE_X = 548;
-localparam int HIGH_SCORE_Y = 12;
+localparam int HIGH_SCORE_X = 48;
+localparam int HIGH_SCORE_Y = 148;
 
 //------------- Output Assignments -----------
 

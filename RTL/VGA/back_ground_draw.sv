@@ -18,8 +18,6 @@ module back_ground_draw (
 
 //------------- Arena Parameters -----------
 
-localparam int TOP_HEIGHT = 88;
-
 localparam int ARENA_LEFT   = 144;
 localparam int ARENA_TOP    = 24;
 localparam int ARENA_RIGHT  = 624;
@@ -30,7 +28,6 @@ localparam int TILE_SIZE = 24;
 //------------- Region Values -----------
 
 //Define params to improve clearity
-localparam logic [1:0] REGION_TOP   = 2'd0;
 localparam logic [1:0] REGION_ARENA = 2'd1;
 localparam logic [1:0] REGION_WOOD  = 2'd2;
 
@@ -72,11 +69,7 @@ localparam logic [39:0] ARENA_ROW_17 = 40'b01_00_01_00_01_00_01_00_01_00_01_00_0
 
 //------------- Area Detection -----------
 
-logic insideTop;
 logic insideArena;
-
-assign insideTop =
-	(pixelY < TOP_HEIGHT) && !insideArena; // Arena takes priority over the legacy HUD.
 
 assign insideArena =
 	(pixelX >= ARENA_LEFT)   &&
@@ -85,8 +78,6 @@ assign insideArena =
 	(pixelY <  ARENA_BOTTOM);
 
 //------------- Coordinate Calculations -----------
-
-logic [15:0] topAddress;
 
 //offset inside the areana 
 logic [10:0] arenaLocalX;
@@ -120,8 +111,6 @@ logic [1:0] currentTile;
 
 always_comb begin
 
-	topAddress = 16'd0;
-
 	//arena offset
 	arenaLocalX = 11'd0;
 	arenaLocalY = 11'd0;
@@ -139,17 +128,7 @@ always_comb begin
 
 	selectedRegion = REGION_WOOD;
 
-	if (insideTop) begin
-
-		selectedRegion = REGION_TOP;
-
-		topAddress =
-			(pixelY * 640) +
-			pixelX;
-
-	end
-
-	else if (insideArena) begin
+	if (insideArena) begin
 
 		selectedRegion = REGION_ARENA;
 
@@ -218,32 +197,12 @@ end
 
 //------------- ROM Outputs -----------
 
-logic [7:0] topRGB;
 logic [7:0] grassRGB;
 logic [7:0] stoneRGB;
 logic [7:0] rockRGB;
 logic [7:0] woodRGB;
 
 logic [7:0] selectedRGB;
-
-//------------- Top HUD ROM -----------
-
-lpm_rom #(
-	.LPM_WIDTH              (8),
-	.LPM_WIDTHAD            (16),
-	.LPM_NUMWORDS           (56320),
-	.LPM_FILE               ("RTL/mifs/top_background_8bit.mif"),
-	.LPM_TYPE               ("LPM_ROM"),
-	.LPM_ADDRESS_CONTROL    ("REGISTERED"),
-	.LPM_OUTDATA            ("UNREGISTERED"),
-	.AUTO_CARRY_CHAINS      ("ON"),
-	.AUTO_CASCADE_BUFFERS   ("ON"),
-	.INTENDED_DEVICE_FAMILY ("Cyclone V")
-) top_background_rom (
-	.address (topAddress),
-	.inclock (clk),
-	.q       (topRGB)
-);
 
 //------------- Grass Tile ROM -----------
 
@@ -328,10 +287,6 @@ always_comb begin
 	selectedRGB = woodRGB;
 
 	case (selectedRegion)
-
-		REGION_TOP: begin
-			selectedRGB = topRGB;
-		end
 
 		REGION_ARENA: begin
 

@@ -372,12 +372,12 @@ agreement for further details.
 	)
 	(parameter
 		"OBJECT_WIDTH_X"
-		"64"
+		"32"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"OBJECT_HEIGHT_Y"
-		"64"
+		"32"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
@@ -391,9 +391,9 @@ agreement for further details.
 	(annotation_block (parameter)(rect -2968 600 -2713 676))
 )
 (symbol
-	(rect -2312 560 -2032 800)
+	(rect -2312 560 -2032 912)
 	(text "NumbersBitMap" (rect 5 0 82 12)(font "Arial" ))
-	(text "inst500" (rect 8 224 43 236)(font "Arial" ))
+	(text "inst500" (rect 8 336 43 348)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -506,6 +506,41 @@ agreement for further details.
 		(text "highScore_RGB[7..0]" (rect 172 75 275 87)(font "Arial" ))
 		(line (pt 280 80)(pt 264 80)(line_width 3))
 	)
+	(port
+		(pt 0 240)
+		(input)
+		(text "pixelX[10..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "pixelX[10..0]" (rect 21 235 210 247)(font "Arial" ))
+		(line (pt 0 240)(pt 16 240)(line_width 3))
+	)
+	(port
+		(pt 0 256)
+		(input)
+		(text "pixelY[10..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "pixelY[10..0]" (rect 21 251 210 263)(font "Arial" ))
+		(line (pt 0 256)(pt 16 256)(line_width 3))
+	)
+	(port
+		(pt 0 272)
+		(input)
+		(text "rubyCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "rubyCountBCD[11..0]" (rect 21 267 210 279)(font "Arial" ))
+		(line (pt 0 272)(pt 16 272)(line_width 3))
+	)
+	(port
+		(pt 0 288)
+		(input)
+		(text "sapphireCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "sapphireCountBCD[11..0]" (rect 21 283 210 295)(font "Arial" ))
+		(line (pt 0 288)(pt 16 288)(line_width 3))
+	)
+	(port
+		(pt 0 304)
+		(input)
+		(text "cursedCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "cursedCountBCD[11..0]" (rect 21 299 210 311)(font "Arial" ))
+		(line (pt 0 304)(pt 16 304)(line_width 3))
+	)
 	(parameter
 		"SCORE_COLOR_LOW"
 		"11111111"
@@ -522,7 +557,7 @@ agreement for further details.
 		""
 		(type "PARAMETER_UNSIGNED_BIN")	)
 	(drawing
-		(rectangle (rect 16 16 264 224))
+		(rectangle (rect 16 16 264 336))
 	)
 	(annotation_block (parameter)(rect -2304 480 -2040 560))
 )
@@ -602,12 +637,12 @@ agreement for further details.
 	)
 	(parameter
 		"OBJECT_WIDTH_X"
-		"64"
+		"32"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"OBJECT_HEIGHT_Y"
-		"64"
+		"32"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
@@ -1036,14 +1071,17 @@ agreement for further details.
 	(pt -3184 832)
 )
 (connector
+	(text "redAppleHitPulse" (rect -3380 832 -3210 849)(font "Arial" ))
 	(pt -3400 848)
 	(pt -3184 848)
 )
 (connector
+	(text "blueAppleHitPulse" (rect -3380 848 -3210 865)(font "Arial" ))
 	(pt -3400 864)
 	(pt -3184 864)
 )
 (connector
+	(text "blackAppleHitPulse" (rect -3380 864 -3210 881)(font "Arial" ))
 	(pt -3392 880)
 	(pt -3184 880)
 )
@@ -1121,4 +1159,154 @@ agreement for further details.
 )
 (junction (pt -2872 800))
 (junction (pt -2896 816))
-(rectangle (rect -3704 112 -1688 1080)(color 0 0 0)(line_width 3))
+(rectangle (rect -3704 112 -1688 1400)(color 0 0 0)(line_width 3))
+
+(connector
+	(text "pixelX[10..0]" (rect -2472 784 -2212 801)(font "Arial" ))
+	(pt -2480 800)
+	(pt -2312 800)
+	(bus)
+)
+(connector
+	(text "pixelY[10..0]" (rect -2472 800 -2212 817)(font "Arial" ))
+	(pt -2480 816)
+	(pt -2312 816)
+	(bus)
+)
+(connector
+	(text "rubyCountBCD[11..0]" (rect -2472 816 -2212 833)(font "Arial" ))
+	(pt -2480 832)
+	(pt -2312 832)
+	(bus)
+)
+(connector
+	(text "sapphireCountBCD[11..0]" (rect -2472 832 -2212 849)(font "Arial" ))
+	(pt -2480 848)
+	(pt -2312 848)
+	(bus)
+)
+(connector
+	(text "cursedCountBCD[11..0]" (rect -2472 848 -2212 865)(font "Arial" ))
+	(pt -2480 864)
+	(pt -2312 864)
+	(bus)
+)
+(symbol
+	(rect -3200 1160 -2920 1320)
+	(text "relic_collection_counters" (rect 5 0 180 12)(font "Arial" ))
+	(text "inst600" (rect 8 144 65 156)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk" (rect 0 0 180 12)(font "Arial" ))
+		(text "clk" (rect 21 27 210 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "resetN" (rect 0 0 180 12)(font "Arial" ))
+		(text "resetN" (rect 21 43 210 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "gameStartPulse" (rect 0 0 180 12)(font "Arial" ))
+		(text "gameStartPulse" (rect 21 59 210 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "redAppleHitPulse" (rect 0 0 180 12)(font "Arial" ))
+		(text "redAppleHitPulse" (rect 21 75 210 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80))
+	)
+	(port
+		(pt 0 96)
+		(input)
+		(text "blueAppleHitPulse" (rect 0 0 180 12)(font "Arial" ))
+		(text "blueAppleHitPulse" (rect 21 91 210 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96))
+	)
+	(port
+		(pt 0 112)
+		(input)
+		(text "blackAppleHitPulse" (rect 0 0 180 12)(font "Arial" ))
+		(text "blackAppleHitPulse" (rect 21 107 210 119)(font "Arial" ))
+		(line (pt 0 112)(pt 16 112))
+	)
+	(port
+		(pt 280 32)
+		(output)
+		(text "rubyCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "rubyCountBCD[11..0]" (rect 130 27 272 39)(font "Arial" ))
+		(line (pt 280 32)(pt 264 32)(line_width 3))
+	)
+	(port
+		(pt 280 48)
+		(output)
+		(text "sapphireCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "sapphireCountBCD[11..0]" (rect 130 43 272 55)(font "Arial" ))
+		(line (pt 280 48)(pt 264 48)(line_width 3))
+	)
+	(port
+		(pt 280 64)
+		(output)
+		(text "cursedCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "cursedCountBCD[11..0]" (rect 130 59 272 71)(font "Arial" ))
+		(line (pt 280 64)(pt 264 64)(line_width 3))
+	)
+	(drawing
+		(rectangle (rect 16 16 264 144))
+	)
+)
+(connector
+	(text "clk" (rect -3336 1176 -3100 1193)(font "Arial" ))
+	(pt -3344 1192)
+	(pt -3200 1192)
+)
+(connector
+	(text "resetN" (rect -3336 1192 -3100 1209)(font "Arial" ))
+	(pt -3344 1208)
+	(pt -3200 1208)
+)
+(connector
+	(text "gameStartPulse" (rect -3336 1208 -3100 1225)(font "Arial" ))
+	(pt -3344 1224)
+	(pt -3200 1224)
+)
+(connector
+	(text "redAppleHitPulse" (rect -3336 1224 -3100 1241)(font "Arial" ))
+	(pt -3344 1240)
+	(pt -3200 1240)
+)
+(connector
+	(text "blueAppleHitPulse" (rect -3336 1240 -3100 1257)(font "Arial" ))
+	(pt -3344 1256)
+	(pt -3200 1256)
+)
+(connector
+	(text "blackAppleHitPulse" (rect -3336 1256 -3100 1273)(font "Arial" ))
+	(pt -3344 1272)
+	(pt -3200 1272)
+)
+(connector
+	(text "rubyCountBCD[11..0]" (rect -2912 1176 -2644 1193)(font "Arial" ))
+	(pt -2920 1192)
+	(pt -2744 1192)
+	(bus)
+)
+(connector
+	(text "sapphireCountBCD[11..0]" (rect -2912 1192 -2644 1209)(font "Arial" ))
+	(pt -2920 1208)
+	(pt -2744 1208)
+	(bus)
+)
+(connector
+	(text "cursedCountBCD[11..0]" (rect -2912 1208 -2644 1225)(font "Arial" ))
+	(pt -2920 1224)
+	(pt -2744 1224)
+	(bus)
+)

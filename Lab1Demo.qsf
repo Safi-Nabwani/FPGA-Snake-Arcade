@@ -370,6 +370,8 @@ set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/randomCounter.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/appleCounter.sv
 set_global_assignment -name BDF_FILE RTL/VGA/Score_Block.bdf
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/NumbersBitMap.sv
+set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/relic_collection_counters.sv
+set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/hud_labels.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/ScoreConstants.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/highscoreComp.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/back_ground_draw.sv
