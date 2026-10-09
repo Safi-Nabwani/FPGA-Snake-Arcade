@@ -551,12 +551,12 @@ agreement for further details.
 	)
 	(parameter
 		"INITIAL_X"
-		"320"
+		"384"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"INITIAL_Y"
-		"280"
+		"240"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(drawing
@@ -682,12 +682,12 @@ agreement for further details.
 	)
 	(parameter
 		"INITIAL_X"
-		"320"
+		"384"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"INITIAL_Y"
-		"280"
+		"240"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter

@@ -31,8 +31,8 @@ module snake_body (
 
 //------------- Parameters -----------
 
-parameter int INITIAL_X = 320;
-parameter int INITIAL_Y = 280;
+parameter int INITIAL_X = 384;
+parameter int INITIAL_Y = 240;
 
 //The MIF is 24x24
 parameter int BODY_SIZE = 24;

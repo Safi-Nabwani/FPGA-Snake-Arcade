@@ -20,10 +20,10 @@ module back_ground_draw (
 
 localparam int TOP_HEIGHT = 88;
 
-localparam int ARENA_LEFT   = 128;
-localparam int ARENA_TOP    = 88;
-localparam int ARENA_RIGHT  = 512;
-localparam int ARENA_BOTTOM = 472;
+localparam int ARENA_LEFT   = 144;
+localparam int ARENA_TOP    = 24;
+localparam int ARENA_RIGHT  = 624;
+localparam int ARENA_BOTTOM = 456;
 
 localparam int TILE_SIZE = 24;
 
@@ -47,25 +47,28 @@ localparam logic [1:0] TILE_ROCK  = 2'b10;
 // 01 = stone
 // 10 = rock / obstacle
 //
-// Each row has 16 tiles.
-// Each tile uses 2 bits, so each row is 32 bits.
+// Each row has 20 tiles.
+// Each tile uses 2 bits, so each row is 40 bits.
 
-localparam logic [31:0] ARENA_ROW_0  = 32'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_1  = 32'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
-localparam logic [31:0] ARENA_ROW_2  = 32'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_3  = 32'b01_00_01_00_01_00_01_00_01_00_01_10_10_00_01_00;
-localparam logic [31:0] ARENA_ROW_4  = 32'b00_01_00_01_00_01_00_01_00_01_00_10_10_01_00_01;
-localparam logic [31:0] ARENA_ROW_5  = 32'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
-localparam logic [31:0] ARENA_ROW_6  = 32'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_7  = 32'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
-localparam logic [31:0] ARENA_ROW_8  = 32'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_9  = 32'b01_00_01_10_10_00_01_00_01_00_01_00_01_00_01_00;
-localparam logic [31:0] ARENA_ROW_10 = 32'b00_01_00_10_10_01_00_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_11 = 32'b01_00_01_10_10_10_10_00_01_00_01_00_01_00_01_00;
-localparam logic [31:0] ARENA_ROW_12 = 32'b00_01_00_10_10_10_10_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_13 = 32'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
-localparam logic [31:0] ARENA_ROW_14 = 32'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
-localparam logic [31:0] ARENA_ROW_15 = 32'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_0  = 40'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_1  = 40'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_2  = 40'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_3  = 40'b01_00_01_00_01_00_01_00_01_00_01_10_10_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_4  = 40'b00_01_00_01_00_01_00_01_00_01_00_10_10_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_5  = 40'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_6  = 40'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_7  = 40'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_8  = 40'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_9  = 40'b01_00_01_10_10_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_10 = 40'b00_01_00_10_10_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_11 = 40'b01_00_01_10_10_10_10_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_12 = 40'b00_01_00_10_10_10_10_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_13 = 40'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+localparam logic [39:0] ARENA_ROW_14 = 40'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_15 = 40'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
+
+localparam logic [39:0] ARENA_ROW_16 = 40'b00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01;
+localparam logic [39:0] ARENA_ROW_17 = 40'b01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00_01_00;
 
 //------------- Area Detection -----------
 
@@ -73,7 +76,7 @@ logic insideTop;
 logic insideArena;
 
 assign insideTop =
-	(pixelY < TOP_HEIGHT);
+	(pixelY < TOP_HEIGHT) && !insideArena; // Arena takes priority over the legacy HUD.
 
 assign insideArena =
 	(pixelX >= ARENA_LEFT)   &&
@@ -90,8 +93,8 @@ logic [10:0] arenaLocalX;
 logic [10:0] arenaLocalY;
 
 //Tile coordinates in the grid
-logic [3:0] tileX;
-logic [3:0] tileY;
+logic [4:0] tileX;
+logic [4:0] tileY;
 
 //offset inside the tile
 logic [4:0] tileOffsetX;
@@ -104,11 +107,11 @@ logic [9:0] woodAddress;
 
 logic [1:0] selectedRegion;
 
-//Each row has 16 tiles, each tile is 2 bits
-logic [31:0] arenaRowData;
+//Each row has 20 tiles, each tile is 2 bits
+logic [39:0] arenaRowData;
 
 //Indicates the index of the MSB of the wanted tile
-logic [4:0] arenaBitIndex;
+logic [5:0] arenaBitIndex;
 
 //The stored value of the tile the watned tile which indicates its type
 logic [1:0] currentTile;
@@ -124,8 +127,8 @@ always_comb begin
 	arenaLocalY = 11'd0;
 
 	//coordinates of the tile
-	tileX = 4'd0;
-	tileY = 4'd0;
+	tileX = 5'd0;
+	tileY = 5'd0;
 
 	//offset inside the tile
 	tileOffsetX = 5'd0;
@@ -180,30 +183,33 @@ always_comb begin
 	//Store the row vector
 	case (tileY)
 
-		4'd0:  arenaRowData = ARENA_ROW_0;
-		4'd1:  arenaRowData = ARENA_ROW_1;
-		4'd2:  arenaRowData = ARENA_ROW_2;
-		4'd3:  arenaRowData = ARENA_ROW_3;
-		4'd4:  arenaRowData = ARENA_ROW_4;
-		4'd5:  arenaRowData = ARENA_ROW_5;
-		4'd6:  arenaRowData = ARENA_ROW_6;
-		4'd7:  arenaRowData = ARENA_ROW_7;
-		4'd8:  arenaRowData = ARENA_ROW_8;
-		4'd9:  arenaRowData = ARENA_ROW_9;
-		4'd10: arenaRowData = ARENA_ROW_10;
-		4'd11: arenaRowData = ARENA_ROW_11;
-		4'd12: arenaRowData = ARENA_ROW_12;
-		4'd13: arenaRowData = ARENA_ROW_13;
-		4'd14: arenaRowData = ARENA_ROW_14;
-		4'd15: arenaRowData = ARENA_ROW_15;
+		5'd0:  arenaRowData = ARENA_ROW_0;
+		5'd1:  arenaRowData = ARENA_ROW_1;
+		5'd2:  arenaRowData = ARENA_ROW_2;
+		5'd3:  arenaRowData = ARENA_ROW_3;
+		5'd4:  arenaRowData = ARENA_ROW_4;
+		5'd5:  arenaRowData = ARENA_ROW_5;
+		5'd6:  arenaRowData = ARENA_ROW_6;
+		5'd7:  arenaRowData = ARENA_ROW_7;
+		5'd8:  arenaRowData = ARENA_ROW_8;
+		5'd9:  arenaRowData = ARENA_ROW_9;
+		5'd10: arenaRowData = ARENA_ROW_10;
+		5'd11: arenaRowData = ARENA_ROW_11;
+		5'd12: arenaRowData = ARENA_ROW_12;
+		5'd13: arenaRowData = ARENA_ROW_13;
+		5'd14: arenaRowData = ARENA_ROW_14;
+		5'd15: arenaRowData = ARENA_ROW_15;
+
+		5'd16: arenaRowData = ARENA_ROW_16;
+		5'd17: arenaRowData = ARENA_ROW_17;
 
 		default: arenaRowData = ARENA_ROW_0;
 
 	endcase
 
-	// TileX = 0 is stored at bits [31:30]
-	//So we use the inverted behavior (31 - ())
-	arenaBitIndex = 5'd31 - (tileX * 2);
+	// TileX = 0 is stored at bits [39:38]
+	//So we use the inverted behavior (39 - ())
+	arenaBitIndex = 6'd39 - (tileX * 2);
 
 	//Stores the type value of the wanted tile
 	currentTile = arenaRowData[arenaBitIndex -: 2];

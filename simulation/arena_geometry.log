@@ -1,0 +1,40 @@
+# do simulation/arena_geometry.do
+# ** Warning: (vlib-34) Library already exists at "simulation/arena_geometry_work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:34:08 on Oct 09,2026
+# vlog -sv -work simulation/arena_geometry_work simulation/arena_rom_stub.sv RTL/VGA/back_ground_draw.sv RTL/VGA/randomCounter.sv RTL/VGA/apple_position_controller.sv RTL/VGA/apple_TopLeft_Calc.sv RTL/VGA/snake_head.sv RTL/VGA/snake_body.sv RTL/VGA/headBitMap.sv simulation/arena_geometry_tb.sv 
+# -- Compiling module lpm_rom
+# -- Compiling module back_ground_draw
+# -- Compiling module randomCounter
+# -- Compiling module apple_position_controller
+# -- Compiling module apple_topleft_calc
+# -- Compiling module snake_head
+# -- Compiling module snake_body
+# -- Compiling module headBitMap
+# -- Compiling module arena_geometry_tb
+# 
+# Top level modules:
+# 	arena_geometry_tb
+# End time: 18:34:08 on Oct 09,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim -voptargs="+acc" simulation/arena_geometry_work.arena_geometry_tb 
+# Start time: 18:34:08 on Oct 09,2026
+# Loading sv_std.std
+# Loading simulation/arena_geometry_work.arena_geometry_tb
+# Loading simulation/arena_geometry_work.back_ground_draw
+# Loading simulation/arena_geometry_work.lpm_rom
+# Loading simulation/arena_geometry_work.randomCounter
+# Loading simulation/arena_geometry_work.apple_position_controller
+# Loading simulation/arena_geometry_work.apple_topleft_calc
+# Loading simulation/arena_geometry_work.snake_head
+# Loading simulation/arena_geometry_work.snake_body
+# Loading simulation/arena_geometry_work.headBitMap
+# PASS: all 307200 visible pixels and all 360 obstacle-map cells
+# PASS: 1024 inputs per color, valid relic extents and overlap rejection
+# PASS: full 1024-state counter cycles, all 360 cells per color and reroll feedback
+# PASS: head/body reset, 24x24 ROM addresses, four 24-pixel movement directions
+# ARENA_GEOMETRY_PASS
+# ** Note: $finish    : simulation/arena_geometry_tb.sv(204)
+#    Time: 346460 ns  Iteration: 1  Instance: /arena_geometry_tb
+# End time: 18:34:09 on Oct 09,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

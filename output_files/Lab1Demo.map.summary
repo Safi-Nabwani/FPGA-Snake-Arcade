@@ -1,0 +1,17 @@
+Analysis & Synthesis Status : Successful - Fri Oct 09 18:33:41 2026
+Quartus Prime Version : 17.0.0 Build 595 04/25/2017 SJ Lite Edition
+Revision Name : Lab1Demo
+Top-level Entity Name : TOP_VGA_DEMO
+Family : Cyclone V
+Logic utilization (in ALMs) : N/A
+Total registers : 5406
+Total pins : 91
+Total virtual pins : 0
+Total block memory bits : 1,392,128
+Total DSP Blocks : 1
+Total HSSI RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total PLLs : 1
+Total DLLs : 0

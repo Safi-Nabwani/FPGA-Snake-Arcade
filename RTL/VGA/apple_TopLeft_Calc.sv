@@ -2,14 +2,14 @@ module apple_topleft_calc (
 
 //------------- Inputs -----------
 
-	input logic [3:0] redX,
-	input logic [3:0] redY,
+	input logic [4:0] redX,
+	input logic [4:0] redY,
 
-	input logic [3:0] blueX,
-	input logic [3:0] blueY,
+	input logic [4:0] blueX,
+	input logic [4:0] blueY,
 
-	input logic [3:0] blackX,
-	input logic [3:0] blackY,
+	input logic [4:0] blackX,
+	input logic [4:0] blackY,
 
 //------------- Outputs -----------
 
@@ -26,8 +26,8 @@ module apple_topleft_calc (
 
 //------------- Parameters -----------
 
-localparam int ARENA_LEFT = 128;
-localparam int ARENA_TOP  = 88;
+localparam int ARENA_LEFT = 144;
+localparam int ARENA_TOP  = 24;
 localparam int TILE_SIZE  = 24;
 
 //------------- Top Left Calculation -----------

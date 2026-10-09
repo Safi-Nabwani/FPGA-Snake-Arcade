@@ -15,14 +15,14 @@ module randomCounter (
 
 //------------- Outputs -----------
 
-	output logic [3:0] redX,
-	output logic [3:0] redY,
+	output logic [4:0] redX,
+	output logic [4:0] redY,
 
-	output logic [3:0] blueX,
-	output logic [3:0] blueY,
+	output logic [4:0] blueX,
+	output logic [4:0] blueY,
 
-	output logic [3:0] blackX,
-	output logic [3:0] blackY
+	output logic [4:0] blackX,
+	output logic [4:0] blackY
 
 );
 
@@ -40,9 +40,19 @@ parameter logic [7:0] blackSeed = 8'h6C;
 //------------- Internal Counters -----------
 
 //Different counter for different colors
-logic [7:0] redCounter;
-logic [7:0] blueCounter;
-logic [7:0] blackCounter;
+logic [9:0] redCounter;
+logic [9:0] blueCounter;
+logic [9:0] blackCounter;
+
+// Fold the five-bit candidates into the 20x18 grid without a divider.
+// This retains counter-based sampling; the distribution is not uniform.
+function automatic logic [4:0] boundX(input logic [4:0] candidate);
+	boundX = (candidate >= 5'd20) ? candidate - 5'd20 : candidate;
+endfunction
+
+function automatic logic [4:0] boundY(input logic [4:0] candidate);
+	boundY = (candidate >= 5'd18) ? candidate - 5'd18 : candidate;
+endfunction
 
 //------------- Sample Conditions -----------
 
@@ -70,41 +80,41 @@ begin
 	//reset valuesS
 	if (!resetN) begin
 
-		redCounter   <= redSeed;
-		blueCounter  <= blueSeed;
-		blackCounter <= blackSeed;
+		redCounter   <= {1'b0, redSeed[7:4], 1'b0, redSeed[3:0]};
+		blueCounter  <= {1'b0, blueSeed[7:4], 1'b0, blueSeed[3:0]};
+		blackCounter <= {1'b0, blackSeed[7:4], 1'b0, blackSeed[3:0]};
 
-		redX   <= redSeed[3:0];
-		redY   <= redSeed[7:4];
+		redX   <= {1'b0, redSeed[3:0]};
+		redY   <= {1'b0, redSeed[7:4]};
 
-		blueX  <= blueSeed[3:0];
-		blueY  <= blueSeed[7:4];
+		blueX  <= {1'b0, blueSeed[3:0]};
+		blueY  <= {1'b0, blueSeed[7:4]};
 
-		blackX <= blackSeed[3:0];
-		blackY <= blackSeed[7:4];
+		blackX <= {1'b0, blackSeed[3:0]};
+		blackY <= {1'b0, blackSeed[7:4]};
 
 	end
 
 	else begin
 
 		//Diiferent incremation values
-		redCounter   <= redCounter   + 8'd5;
-		blueCounter  <= blueCounter  + 8'd7;
-		blackCounter <= blackCounter + 8'd13;
+		redCounter   <= redCounter   + 10'd5;
+		blueCounter  <= blueCounter  + 10'd7;
+		blackCounter <= blackCounter + 10'd13;
 
 		if (sampleRed) begin
-			redX <= redCounter[3:0];
-			redY <= redCounter[7:4];
+			redX <= boundX(redCounter[4:0]);
+			redY <= boundY(redCounter[9:5]);
 		end
 
 		if (sampleBlue) begin
-			blueX <= blueCounter[3:0];
-			blueY <= blueCounter[7:4];
+			blueX <= boundX(blueCounter[4:0]);
+			blueY <= boundY(blueCounter[9:5]);
 		end
 
 		if (sampleBlack) begin
-			blackX <= blackCounter[3:0];
-			blackY <= blackCounter[7:4];
+			blackX <= boundX(blackCounter[4:0]);
+			blackY <= boundY(blackCounter[9:5]);
 		end
 
 	end
