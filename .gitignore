@@ -1,0 +1,20 @@
+# Quartus compiler caches and generated outputs.
+# Compilation reports and programming files remain available locally.
+/db/
+/incremental_db/
+/output_files/
+
+# Generated Quartus import logs and device diagnostics.
+/*.qarlog
+/c5_pin_model_dump.txt
+
+# ModelSim compiled libraries and run outputs.
+# Keep testbenches, simulation scripts, and ROM models tracked.
+/simulation/*_work/
+/simulation/work/
+/simulation/*.log
+/simulation/transcript
+/simulation/*.wlf
+/simulation/*.vcd
+/transcript
+/vsim.wlf
