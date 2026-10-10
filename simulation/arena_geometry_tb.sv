@@ -42,9 +42,13 @@ module arena_geometry_tb;
     headBitMap bitmap(clk, resetN, ox, oy, 1'b1, rotation, headDR, headRGB);
 
     function automatic bit rock(input integer x, input integer y);
-        rock = ((y == 3 || y == 4) && (x == 11 || x == 12)) ||
-               ((y == 9 || y == 10) && (x == 3 || x == 4)) ||
-               ((y == 11 || y == 12) && (x >= 3 && x <= 6));
+        rock = ((y==3) && (x>=2 && x<=5 || x>=14 && x<=17)) ||
+               ((y==4 || y==5) && (x==2 || x==17)) ||
+               (x==3 && (y==9 || y==10)) || (x==4 && y==10) ||
+               (y==11 && x>=14 && x<=16) || (x==16 && (y==12 || y==13)) ||
+               (y==15 && x>=6 && x<=8) || (x==6 && y==14) ||
+               (x==11 && (y==4 || y==15)) || (x==6 && y==7) ||
+               (x==17 && y==8) || ((x==3 || x==18) && y==14);
     endfunction
     task automatic check(input bit ok, input string description);
         if (!ok) $fatal(1, "FAIL: %s at %0t", description, $time);

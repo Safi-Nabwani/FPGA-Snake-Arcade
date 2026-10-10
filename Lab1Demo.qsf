@@ -358,6 +358,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/VGA_Controller.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/square_object.sv
 set_global_assignment -name BDF_FILE RTL/VGA/Snake_Block.bdf
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/headBitMap.sv
+set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/jungle_head_draw.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/snake_head.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/snake_body.sv
 set_global_assignment -name SYSTEMVERILOG_FILE RTL/VGA/speed_controller.sv

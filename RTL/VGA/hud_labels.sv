@@ -50,17 +50,17 @@ module hud_labels (
     endfunction
 
     always_comb begin
-        labelRGB = 8'hFF;
+        labelRGB = 8'hF9;
         labelBit = textPixel(pixelX, pixelY, 40, 5, "SCORE") ||
                    textPixel(pixelX, pixelY, 112, 4, "HIGH") ||
                    textPixel(pixelX, pixelY, 128, 5, "SCORE") ||
                    textPixel(pixelX, pixelY, 208, 6, "RELICS");
         if (textPixel(pixelX, pixelY, 240, 4, "RUBY")) begin
-            labelBit = 1'b1; labelRGB = 8'hE0;
+            labelBit = 1'b1; labelRGB = 8'hED;
         end else if (textPixel(pixelX, pixelY, 308, 8, "SAPPHIRE")) begin
-            labelBit = 1'b1; labelRGB = 8'h03;
+            labelBit = 1'b1; labelRGB = 8'h57;
         end else if (textPixel(pixelX, pixelY, 376, 6, "CURSED")) begin
-            labelBit = 1'b1; labelRGB = 8'hA3;
+            labelBit = 1'b1; labelRGB = 8'hB3;
         end
     end
 endmodule

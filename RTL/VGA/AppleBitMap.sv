@@ -109,6 +109,22 @@ logic [7:0] blueAppleColor;
 logic [7:0] blackAppleColor;
 
 logic [7:0] selectedAppleColor;
+logic insideAppleD;
+logic [1:0] selectedAppleD;
+logic [2:0] collisionBits;
+
+// Frozen silhouettes; retain original priority, current-square gating and
+// registered-address hit latency even at transitions between relics.
+    lpm_rom #(.LPM_WIDTH(3), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
+        .LPM_FILE("RTL/mifs/relic_collision_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
+        .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
+        .INTENDED_DEVICE_FAMILY("Cyclone V")) collision_rom
+        (.address(address), .inclock(clk), .q(collisionBits));
+always_ff @(posedge clk or negedge resetN) begin
+    if (!resetN) begin insideAppleD <= 0; selectedAppleD <= RED_APPLE; end
+    else begin insideAppleD <= insideApple; selectedAppleD <= selectedApple; end
+end
 
 //------------- Red Apple ROM -----------
 
@@ -175,7 +191,7 @@ always_comb begin
 	selectedAppleColor = TRANSPARENT_ENCODING;
 
 	//pass the actual colors we want to display 
-	case (selectedApple)
+	case (selectedAppleD)
 
 		RED_APPLE:
 			selectedAppleColor = redAppleColor;
@@ -204,10 +220,10 @@ always_comb begin
 
 	apple_RGB = TRANSPARENT_ENCODING;
 
-	if (insideApple && (selectedAppleColor != TRANSPARENT_ENCODING)) begin
-
-		apple_DR = 1'b1;
-		apple_RGB = selectedAppleColor;
+	// Only the visual pair uses delayed square/type metadata, aligned to q.
+	apple_DR = insideAppleD && (selectedAppleColor != TRANSPARENT_ENCODING);
+	apple_RGB = apple_DR ? selectedAppleColor : TRANSPARENT_ENCODING;
+	if (insideApple && collisionBits[selectedApple]) begin
 
 		case (selectedApple)
 

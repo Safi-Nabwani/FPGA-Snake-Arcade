@@ -14,11 +14,11 @@ module NumbersBitMap (
     output logic highScore_DR,
     output logic [7:0] highScore_RGB
 );
-    parameter logic [7:0] SCORE_COLOR_LOW = 8'hFF;
-    parameter logic [7:0] SCORE_COLOR_HIGH = 8'hFC;
-    parameter logic [7:0] HIGH_SCORE_COLOR = 8'hE0;
-    localparam logic [7:0] PANEL_COLOR = 8'h24, FRAME_COLOR = 8'h6D;
-    localparam logic [7:0] RUBY_COLOR = 8'hE0, SAPPHIRE_COLOR = 8'h03, CURSED_COLOR = 8'hA3;
+    parameter logic [7:0] SCORE_COLOR_LOW = 8'hF9;
+    parameter logic [7:0] SCORE_COLOR_HIGH = 8'hD9;
+    parameter logic [7:0] HIGH_SCORE_COLOR = 8'hF9;
+    localparam logic [7:0] PANEL_COLOR = 8'h04, FRAME_COLOR = 8'h8D;
+    localparam logic [7:0] RUBY_COLOR = 8'hED, SAPPHIRE_COLOR = 8'h57, CURSED_COLOR = 8'hB3;
 
     // Stage 1: raw coordinates align with the registered square_object offsets.
     logic [10:0] pixelXD, pixelYD;

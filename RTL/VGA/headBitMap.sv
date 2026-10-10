@@ -116,7 +116,8 @@ lpm_rom #(
 	.LPM_WIDTH              (8),
 	.LPM_WIDTHAD            (10),
 	.LPM_NUMWORDS           (576),
-	.LPM_FILE               ("RTL/mifs/snake_head_24.mif"),
+	// Frozen legacy silhouette: this output now drives collision only.
+	.LPM_FILE               ("RTL/mifs/snake_head_collision_24.mif"),
 	.LPM_TYPE               ("LPM_ROM"),
 	.LPM_ADDRESS_CONTROL    ("REGISTERED"),
 	.LPM_OUTDATA            ("UNREGISTERED"),

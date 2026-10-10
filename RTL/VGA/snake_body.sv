@@ -280,12 +280,19 @@ end
 
 //------------- Outputs -----------
 
-assign snakeBody_DR =
-	gameStarted &&
-	insideBody &&
-	(color != TRANSPARENT_ENCODING);
-
-assign snakeBody_RGB = color;
+// Visual metadata only: trail, length and self-collision above are unchanged.
+logic bodyVisibleD;
+always_ff @(posedge clk or negedge resetN) begin
+    if (!resetN) begin
+        bodyVisibleD <= 1'b0;
+        snakeBody_DR <= 1'b0;
+        snakeBody_RGB <= TRANSPARENT_ENCODING;
+    end else begin
+        bodyVisibleD <= gameStarted && insideBody;
+        snakeBody_DR <= bodyVisibleD && color != TRANSPARENT_ENCODING;
+        snakeBody_RGB <= bodyVisibleD ? color : TRANSPARENT_ENCODING;
+    end
+end
 
 assign snakeSelfCollision =
 	gameStarted &&

@@ -21,6 +21,11 @@ agreement for further details.
 */
 //#pragma file_not_in_maxplusii_format
 (header "graphic" (version "1.4"))
+(connector
+	(text "snakeHeadVisual_DR" (rect -414 792 -280 805)(font "Arial" ))
+	(pt -416 808)
+	(pt -280 808)
+)
 (pin
 	(input)
 	(rect -272 -160 -96 -144)
@@ -576,6 +581,13 @@ agreement for further details.
 		(text "snakeSelfCollision" (rect 0 0 107 19)(font "Intel Clear" (font_size 8)))
 		(text "snakeSelfCollision" (rect 168 107 275 126)(font "Intel Clear" (font_size 8)))
 		(line (pt 296 112)(pt 280 112))
+	)
+	(port
+		(pt 296 128)
+		(output)
+		(text "snakeHeadVisual_DR" (rect 0 0 130 12)(font "Arial" ))
+		(text "snakeHeadVisual_DR" (rect 110 123 219 135)(font "Arial" ))
+		(line (pt 296 128)(pt 280 128))
 	)
 	(drawing
 		(rectangle (rect 16 16 280 272))
@@ -1803,7 +1815,7 @@ agreement for further details.
 	(pt 488 48)
 )
 (connector
-	(text "snakeHead_DR" (rect 370 48 443 65)(font "Intel Clear" ))
+	(text "snakeHeadVisual_DR" (rect 370 48 504 65)(font "Intel Clear" ))
 	(pt 368 64)
 	(pt 488 64)
 )

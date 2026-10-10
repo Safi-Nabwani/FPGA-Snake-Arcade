@@ -35,10 +35,14 @@ module hud_render_tb;
     task automatic check(input bit ok, input string message);
         if (!ok) $fatal(1, "%s at source pixel (%0d,%0d)", message, prevX, prevY);
     endtask
-    function automatic bit rock(input integer tx, input integer ty);
-        rock = ((ty == 3 || ty == 4) && (tx == 11 || tx == 12)) ||
-               ((ty == 9 || ty == 10) && (tx == 3 || tx == 4)) ||
-               ((ty == 11 || ty == 12) && (tx >= 3 && tx <= 6));
+    function automatic bit rock(input integer x, input integer y);
+        rock = ((y==3) && (x>=2 && x<=5 || x>=14 && x<=17)) ||
+               ((y==4 || y==5) && (x==2 || x==17)) ||
+               (x==3 && (y==9 || y==10)) || (x==4 && y==10) ||
+               (y==11 && x>=14 && x<=16) || (x==16 && (y==12 || y==13)) ||
+               (y==15 && x>=6 && x<=8) || (x==6 && y==14) ||
+               (x==11 && (y==4 || y==15)) || (x==6 && y==7) ||
+               (x==17 && y==8) || ((x==3 || x==18) && y==14);
     endfunction
     task automatic scan(input integer nx, ny);
         @(negedge clk); px = nx; py = ny;
@@ -46,20 +50,20 @@ module hud_render_tb;
         labelPrevious = display.labelBit; previousLabelRGB = display.labelRGB;
         expectedPanel = prevX >= 8 && prevX < 128 && prevY >= 24 && prevY < 456;
         expectedHigh = 0; digit = -1; localX = 0; localY = 0;
-        expectedRGB = 8'h24; numberRGB = 8'hFF;
+        expectedRGB = 8'h04; numberRGB = 8'hFF;
         if (prevX < 10 || prevX >= 126 || prevY < 26 || prevY >= 454 || prevY == 100 || prevY == 192)
-            expectedRGB = 8'h6D;
+            expectedRGB = 8'h8D;
         if (prevX >= 48 && prevX < 80 && prevY >= 64 && prevY < 96) begin
             digit = prevX < 64 ? sh : sl; localX = (prevX-48)%16; localY = prevY-64;
-            numberRGB = sh == 0 || (sh == 1 && sl == 0) ? 8'hFF : 8'hFC;
+            numberRGB = sh == 0 || (sh == 1 && sl == 0) ? 8'hF9 : 8'hD9;
         end else if (prevX >= 48 && prevX < 80 && prevY >= 148 && prevY < 180) begin
             digit = prevX < 64 ? hh : hl; localX = (prevX-48)%16; localY = prevY-148;
-            expectedHigh = 1; numberRGB = 8'hE0;
+            expectedHigh = 1; numberRGB = 8'hF9;
         end else if (prevX >= 40 && prevX < 88) begin
             word = 0;
-            if (prevY >= 260 && prevY < 292) begin word = ruby; localY = prevY-260; numberRGB = 8'hE0; end
-            else if (prevY >= 328 && prevY < 360) begin word = sapphire; localY = prevY-328; numberRGB = 8'h03; end
-            else if (prevY >= 396 && prevY < 428) begin word = cursed; localY = prevY-396; numberRGB = 8'hA3; end
+            if (prevY >= 260 && prevY < 292) begin word = ruby; localY = prevY-260; numberRGB = 8'hED; end
+            else if (prevY >= 328 && prevY < 360) begin word = sapphire; localY = prevY-328; numberRGB = 8'h57; end
+            else if (prevY >= 396 && prevY < 428) begin word = cursed; localY = prevY-396; numberRGB = 8'hB3; end
             else word = -1;
             if (word >= 0) begin
                 if (prevX < 56) digit = (word >> 8) & 15;
