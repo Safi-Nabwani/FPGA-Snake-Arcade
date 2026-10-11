@@ -9,6 +9,7 @@ module back_ground_draw (
     localparam int TILE_SIZE=24;
     localparam logic [1:0] REGION_ARENA=1, REGION_WOOD=2;
     `include "RTL/VGA/jungle_map.svh"
+    `include "RTL/VGA/jungle_floor_map.svh"
     logic insideArena;
     logic [10:0] arenaLocalX, arenaLocalY;
     logic [4:0] tileX, tileY, tileOffsetX, tileOffsetY;
@@ -33,6 +34,10 @@ module back_ground_draw (
             tileOffsetY=arenaLocalY-tileY*TILE_SIZE;
         end
         descriptor=jungleTile(tileX,tileY);
+        // Floor selection is independent of the frozen obstacle descriptors.
+        // Supplied artwork is sampled unrotated at address y*24+x.
+        if (descriptor[2:0] < 3'd4)
+            descriptor={2'b00, 1'b0, jungleFloorTile(tileX,tileY)};
         tileAddress=tileOffsetY*TILE_SIZE+tileOffsetX;
         rx=tileOffsetX; ry=tileOffsetY;
         case(descriptor[4:3])
@@ -44,25 +49,25 @@ module back_ground_draw (
         address=ry*TILE_SIZE+rx;
     end
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/floor_base_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/ancient_stone_24x24_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_0
         (.address(address), .inclock(clk), .q(tileRGB[0]));
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/grass_tile_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/mossy_stone_24x24_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_1
         (.address(address), .inclock(clk), .q(tileRGB[1]));
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/stone_tile_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/cracked_stone_24x24_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_2
         (.address(address), .inclock(clk), .q(tileRGB[2]));
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/floor_carved_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/engraved_stone_24x24_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_3

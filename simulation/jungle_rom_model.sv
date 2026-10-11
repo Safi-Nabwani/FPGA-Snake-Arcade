@@ -1,5 +1,5 @@
 // Test-only legacy uppercase LPM adapter. Loads real MIFs, registered address.
-// Eight new assets use HEX addresses; unchanged wood ROM uses decimal addresses.
+// Supplied floors use UNS addresses; previous assets use HEX (wood uses DEC).
 // Not listed in QSF. Missing, duplicate or incomplete ROM data is a fatal error.
 module lpm_rom #(
     parameter LPM_WIDTH=8, LPM_WIDTHAD=10, LPM_NUMWORDS=576,
@@ -17,14 +17,21 @@ module lpm_rom #(
     reg [LPM_WIDTHAD-1:0] addressD;
     reg [4095:0] line;
     integer fileHandle, status, location, value, count, i;
+    string addressRadix;
+    bit decimalAddress;
     initial begin
+        decimalAddress=(LPM_FILE=="RTL/mifs/wood_tile_32.mif");
         for (i=0; i<LPM_NUMWORDS; i=i+1) begin data[i]=0; seen[i]=0; end
         fileHandle=$fopen(LPM_FILE,"r");
         if (!fileHandle) $fatal(1,"Cannot open %s",LPM_FILE);
         count=0;
         while (!$feof(fileHandle)) begin
             status=$fgets(line,fileHandle);
-            if (LPM_FILE=="RTL/mifs/wood_tile_32.mif")
+            // Read the supplied header instead of rewriting its address records.
+            status=$sscanf(line,"ADDRESS_RADIX=%s",addressRadix);
+            if (status==1)
+                decimalAddress=(addressRadix=="UNS;" || addressRadix=="DEC;");
+            if (decimalAddress)
                 status=$sscanf(line,"%d : %h;",location,value);
             else
                 status=$sscanf(line,"%h : %h;",location,value);

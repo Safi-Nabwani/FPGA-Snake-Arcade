@@ -1,0 +1,5 @@
+# Preserve the final supplied floor MIFs byte-for-byte, including line endings.
+RTL/mifs/ancient_stone_24x24_rgb332.mif -text
+RTL/mifs/mossy_stone_24x24_rgb332.mif -text
+RTL/mifs/cracked_stone_24x24_rgb332.mif -text
+RTL/mifs/engraved_stone_24x24_rgb332.mif -text
