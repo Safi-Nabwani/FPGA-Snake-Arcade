@@ -6,3 +6,5 @@ RTL/mifs/engraved_stone_24x24_rgb332.mif -text
 RTL/mifs/rock_tile_floor_match_v4_24.mif -text
 RTL/mifs/ruin_wall_floor_match_v4_24.mif -text
 RTL/mifs/ruin_pillar_floor_match_v4_24.mif -text
+RTL/mifs/hud_panel_rgb332.mif -text
+RTL/mifs/hud_panel_alpha.mif -text

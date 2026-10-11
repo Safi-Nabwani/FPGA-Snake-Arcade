@@ -372,12 +372,12 @@ agreement for further details.
 	)
 	(parameter
 		"OBJECT_WIDTH_X"
-		"32"
+		"16"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"OBJECT_HEIGHT_Y"
-		"32"
+		"9"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
@@ -543,17 +543,17 @@ agreement for further details.
 	)
 	(parameter
 		"SCORE_COLOR_LOW"
-		"11111111"
+		"11111001"
 		""
 		(type "PARAMETER_UNSIGNED_BIN")	)
 	(parameter
 		"SCORE_COLOR_HIGH"
-		"11111100"
+		"11111001"
 		""
 		(type "PARAMETER_UNSIGNED_BIN")	)
 	(parameter
 		"HIGH_SCORE_COLOR"
-		"11100000"
+		"11111001"
 		""
 		(type "PARAMETER_UNSIGNED_BIN")	)
 	(drawing
@@ -637,12 +637,12 @@ agreement for further details.
 	)
 	(parameter
 		"OBJECT_WIDTH_X"
-		"32"
+		"16"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"OBJECT_HEIGHT_Y"
-		"32"
+		"9"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
