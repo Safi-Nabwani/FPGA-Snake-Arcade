@@ -1,0 +1,44 @@
+{
+  "ancient_stone_24x24_rgb332": {
+    "sha256": "aeff526305e9dcffb6e1b3f83480a3c2b1ceb607b6d41a771c62c575d5fd48b6",
+    "words": 576,
+    "colors": 5,
+    "transparent_pixels": 0
+  },
+  "mossy_stone_24x24_rgb332": {
+    "sha256": "8e6fd33fbbadb54a38bcfa7c95306560aae3341beca513c2c73f6ea0c4ee5080",
+    "words": 576,
+    "colors": 9,
+    "transparent_pixels": 0
+  },
+  "cracked_stone_24x24_rgb332": {
+    "sha256": "f7e6d001ccf63a8a59d8e8ba6d2a5e2a6134f686c7806421211c273b97512e60",
+    "words": 576,
+    "colors": 6,
+    "transparent_pixels": 0
+  },
+  "engraved_stone_24x24_rgb332": {
+    "sha256": "77e661e7e1f1244b2f9e6a69870a91c7bf4ee66edff5b2fd02d82d3cbab3e8ef",
+    "words": 576,
+    "colors": 5,
+    "transparent_pixels": 0
+  },
+  "rock_tile_floor_match_v4_24": {
+    "sha256": "18b4ed22893f056b6fd1bc501d56af8af3ebe9f9cb0d687d2ec45aedc3183dc9",
+    "words": 576,
+    "colors": 7,
+    "transparent_pixels": 0
+  },
+  "ruin_wall_floor_match_v4_24": {
+    "sha256": "a38e5aa4b338ee60a4be7dcc812086242a3263053c8a74cf22782bf4ac7777ad",
+    "words": 576,
+    "colors": 9,
+    "transparent_pixels": 0
+  },
+  "ruin_pillar_floor_match_v4_24": {
+    "sha256": "ac9d23a9a952a6fd97c2b5ebd3701c676854069abb2200a882a31d614c729309",
+    "words": 576,
+    "colors": 9,
+    "transparent_pixels": 0
+  }
+}

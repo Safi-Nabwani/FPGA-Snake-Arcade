@@ -73,19 +73,19 @@ module back_ground_draw (
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_3
         (.address(address), .inclock(clk), .q(tileRGB[3]));
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/rock_tile_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/rock_tile_floor_match_v4_24.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_4
         (.address(address), .inclock(clk), .q(tileRGB[4]));
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/ruin_wall_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/ruin_wall_floor_match_v4_24.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_5
         (.address(address), .inclock(clk), .q(tileRGB[5]));
     lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
-        .LPM_FILE("RTL/mifs/ruin_pillar_24.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_FILE("RTL/mifs/ruin_pillar_floor_match_v4_24.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) tile_rom_6

@@ -1,5 +1,8 @@
-# Preserve the final supplied floor MIFs byte-for-byte, including line endings.
+# Preserve supplied floor and obstacle MIFs byte-for-byte, including line endings.
 RTL/mifs/ancient_stone_24x24_rgb332.mif -text
 RTL/mifs/mossy_stone_24x24_rgb332.mif -text
 RTL/mifs/cracked_stone_24x24_rgb332.mif -text
 RTL/mifs/engraved_stone_24x24_rgb332.mif -text
+RTL/mifs/rock_tile_floor_match_v4_24.mif -text
+RTL/mifs/ruin_wall_floor_match_v4_24.mif -text
+RTL/mifs/ruin_pillar_floor_match_v4_24.mif -text
