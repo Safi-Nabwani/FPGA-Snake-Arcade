@@ -31,54 +31,67 @@ module NumbersBitMap (
     logic [7:0] digitRGB;
     logic [3:0] selectedDigit, digitX;
     logic [4:0] digitY;
-    logic [4:0] relicOffsetX;
+    logic [5:0] relicOffsetX;
     logic [11:0] selectedRelicBCD;
-    logic [6:0] panelOffsetX;
-    logic [8:0] panelOffsetY;
-    logic [15:0] panelAddress;
+    logic [16:0] panelAddress;
     logic [7:0] panelRGB;
-    logic panelMask;
 
     always_comb begin
-        panelHit = (pixelXD >= HUD_LEFT && pixelXD < HUD_RIGHT &&
-                    pixelYD >= HUD_TOP && pixelYD < HUD_BOTTOM);
-        panelOffsetX = pixelXD[6:0] - 7'd8;
-        panelOffsetY = pixelYD[8:0] - 9'd24;
-        // The native panel is row-major, 120 pixels wide; never sample outside its ROM.
-        panelAddress = panelHit ? ({7'b0,panelOffsetY} * 16'd120 + {9'b0,panelOffsetX}) : 16'd0;
+        // All approved boundary pixels are opaque, including RGB33200 and FF.
+        // Geometry is the independent drawing mask; it has NO gameplay outputs.
+        panelHit = pixelXD < 11'd640 && pixelYD < 11'd480 &&
+                   !(pixelXD >= 11'd144 && pixelXD < 11'd624 &&
+                     pixelYD >= 11'd24 && pixelYD < 11'd456);
+        panelAddress = 0;
+        if (panelHit) begin
+            // Compact atlas: left144x480, top496x24, bottom496x24, right16x432.
+            // No arena pixels are stored. Registered ROM/metadata latency is unchanged.
+            if (pixelXD < 11'd144)
+                panelAddress = ({8'b0,pixelYD[8:0]} << 7) +
+                               ({8'b0,pixelYD[8:0]} << 4) + {9'b0,pixelXD[7:0]};
+            else if (pixelYD < 11'd24)
+                panelAddress = 17'd69120 + ({8'b0,pixelYD[8:0]} << 9) -
+                               ({8'b0,pixelYD[8:0]} << 4) + {7'b0,pixelXD[9:0]} - 17'd144;
+            else if (pixelYD >= 11'd456)
+                panelAddress = 17'd81024 + (({8'b0,pixelYD[8:0]} - 17'd456) << 9) -
+                               (({8'b0,pixelYD[8:0]} - 17'd456) << 4) +
+                               {7'b0,pixelXD[9:0]} - 17'd144;
+            else
+                panelAddress = 17'd92928 + (({8'b0,pixelYD[8:0]} - 17'd24) << 4) +
+                               {13'b0,pixelXD[3:0]};
+        end
         digitHit = 1'b0; selectedHighScore = 1'b0;
         selectedDigit = 0; digitX = 0; digitY = 0;
         digitRGB = SCORE_COLOR_LOW;
         relicOffsetX = 0; selectedRelicBCD = 0;
-        // Reuse the unchanged font: sample every second pixel in its occupied rows6..23.
-        // Compact 8x9 glyphs fit the supplied windows; there is no panel scaling/cropping.
-        if (scoreSquare_DR && scoreOffsetX < 11'd16 && scoreOffsetY < 11'd9) begin
+        // Full-detail occupied rows6..23 of the unchanged font: 16x18 per digit.
+        if (scoreSquare_DR && scoreOffsetX < 11'd32 && scoreOffsetY < 11'd18) begin
             digitHit = 1'b1;
-            selectedDigit = scoreOffsetX[3] ? scoreLow : scoreHigh;
-            digitX = {scoreOffsetX[2:0],1'b0}; digitY = 5'd6 + {scoreOffsetY[3:0],1'b0};
+            selectedDigit = scoreOffsetX[4] ? scoreLow : scoreHigh;
+            digitX = scoreOffsetX[3:0]; digitY = 5'd6 + scoreOffsetY[4:0];
             if (!(scoreHigh == 0 || (scoreHigh == 1 && scoreLow == 0)))
                 digitRGB = SCORE_COLOR_HIGH;
-        end else if (highScoreSquare_DR && highScoreOffsetX < 11'd16 && highScoreOffsetY < 11'd9) begin
+        end else if (highScoreSquare_DR && highScoreOffsetX < 11'd32 && highScoreOffsetY < 11'd18) begin
             digitHit = 1'b1; selectedHighScore = 1'b1;
-            selectedDigit = highScoreOffsetX[3] ? highScoreLow : highScoreHigh;
-            digitX = {highScoreOffsetX[2:0],1'b0}; digitY = 5'd6 + {highScoreOffsetY[3:0],1'b0};
+            selectedDigit = highScoreOffsetX[4] ? highScoreLow : highScoreHigh;
+            digitX = highScoreOffsetX[3:0]; digitY = 5'd6 + highScoreOffsetY[4:0];
             digitRGB = HIGH_SCORE_COLOR;
-        end else if (pixelXD >= RELIC_X && pixelXD < RELIC_X+24) begin
-            relicOffsetX = pixelXD[4:0] - 5'd6;
+        end else if (pixelXD >= RELIC_X && pixelXD < RELIC_X+48) begin
+            relicOffsetX = pixelXD[5:0] - RELIC_X[5:0];
             if (pixelYD >= RUBY_Y && pixelYD < RUBY_Y+HUD_DIGIT_HEIGHT) begin
                 digitHit = 1'b1; selectedRelicBCD = rubyCountBCD;
-                digitY = 5'd6 + ((pixelYD[4:0] - 5'd3) << 1); digitRGB = RUBY_COLOR;
+                digitY = 5'd6 + (pixelYD[4:0] - RUBY_Y[4:0]); digitRGB = RUBY_COLOR;
             end else if (pixelYD >= SAPPHIRE_Y && pixelYD < SAPPHIRE_Y+HUD_DIGIT_HEIGHT) begin
                 digitHit = 1'b1; selectedRelicBCD = sapphireCountBCD;
-                digitY = 5'd6 + ((pixelYD[4:0] - 5'd4) << 1); digitRGB = SAPPHIRE_COLOR;
+                digitY = 5'd6 + (pixelYD[4:0] - SAPPHIRE_Y[4:0]); digitRGB = SAPPHIRE_COLOR;
             end else if (pixelYD >= CURSED_Y && pixelYD < CURSED_Y+HUD_DIGIT_HEIGHT) begin
                 digitHit = 1'b1; selectedRelicBCD = cursedCountBCD;
-                digitY = 5'd6 + ((pixelYD[4:0] - 5'd5) << 1); digitRGB = CURSED_COLOR;
+                digitY = 5'd6 + (pixelYD[4:0] - CURSED_Y[4:0]); digitRGB = CURSED_COLOR;
             end
-            if (relicOffsetX < 5'd8) selectedDigit = selectedRelicBCD[11:8];
-            else if (relicOffsetX < 5'd16) selectedDigit = selectedRelicBCD[7:4];
+            if (relicOffsetX < 6'd16) selectedDigit = selectedRelicBCD[11:8];
+            else if (relicOffsetX < 6'd32) selectedDigit = selectedRelicBCD[7:4];
             else selectedDigit = selectedRelicBCD[3:0];
-            digitX = {relicOffsetX[2:0],1'b0};
+            digitX = relicOffsetX[3:0];
         end
     end
 
@@ -94,21 +107,15 @@ module NumbersBitMap (
         .INTENDED_DEVICE_FAMILY("Cyclone V")
     ) rom_inst (.address(address), .inclock(clk), .q(fontBit));
 
-    // Color00 is NOT a transparency key. Both ROMs use the identical address/edge.
-    lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(16), .LPM_NUMWORDS(51840),
-        .LPM_FILE("RTL/mifs/hud_panel_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
+    // Opaque boundary atlas. Color values never control transparency/collision.
+    lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(17), .LPM_NUMWORDS(99840),
+        .LPM_FILE("RTL/mifs/hud_frame_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")) panel_rom
         (.address(panelAddress), .inclock(clk), .q(panelRGB));
-    lpm_rom #(.LPM_WIDTH(1), .LPM_WIDTHAD(16), .LPM_NUMWORDS(51840),
-        .LPM_FILE("RTL/mifs/hud_panel_alpha.mif"), .LPM_TYPE("LPM_ROM"),
-        .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
-        .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
-        .INTENDED_DEVICE_FAMILY("Cyclone V")) panel_alpha_rom
-        (.address(panelAddress), .inclock(clk), .q(panelMask));
 
-    // Stage 2: field metadata follows the SAME edge as all three ROM addresses.
+    // Stage 2: field metadata follows the SAME edge as both ROM addresses.
     logic panelD, digitD, highD;
     logic [7:0] digitColorD;
     always_ff @(posedge clk or negedge resetN) begin
@@ -120,9 +127,9 @@ module NumbersBitMap (
             digitColorD <= digitRGB;
         end
     end
-    // Keep the original score/high-score layers and mux priority; sidebar is disjoint from arena.
-    assign highScore_DR = panelD && panelMask && highD && digitD && fontBit;
-    assign score_DR = panelD && panelMask && !highScore_DR;
+    // Original layers/priority. The entire frame is disjoint from playable pixels.
+    assign highScore_DR = panelD && highD && digitD && fontBit;
+    assign score_DR = panelD && !highScore_DR;
     assign highScore_RGB = digitColorD;
     assign score_RGB = digitD && fontBit ? digitColorD : panelRGB;
 endmodule

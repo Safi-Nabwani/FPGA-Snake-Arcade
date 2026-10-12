@@ -1,5 +1,5 @@
-# Run from project root after scripts/implement_jungle_hud.py --fixtures.
-# All panel/alpha/font/background ROMs are loaded from their actual MIFs.
+# Run from project root after scripts/implement_final_hud.py --fixtures.
+# All approved boundary/font/background ROMs are loaded from their actual MIFs.
 onerror {quit -code 1 -f}
 vlib simulation/hud_relics_work
 vlog -sv -work simulation/hud_relics_work simulation/jungle_rom_model.sv RTL/VGA/relic_collection_counters.sv RTL/VGA/hud_labels.sv RTL/VGA/NumbersBitMap.sv RTL/VGA/ScoreConstants.sv RTL/VGA/appleCounter.sv RTL/VGA/highscoreComp.sv RTL/VGA/game_controller.sv RTL/VGA/blue_apple_controller.sv RTL/VGA/square_object.sv RTL/VGA/back_ground_draw.sv RTL/VGA/objects_mux.sv simulation/hud_counters_tb.sv simulation/hud_render_tb.sv

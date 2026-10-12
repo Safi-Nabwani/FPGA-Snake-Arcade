@@ -1,0 +1,147 @@
+{
+  "preview_only": true,
+  "approval_pending": true,
+  "size": [
+    640,
+    480
+  ],
+  "source_scene": "assets/jungle/hud_implemented/full_scene_640x480.png",
+  "source_scene_sha256": "04238F956C4FF30E4469653400AA3E09579A930CFE72B535B17598D2646D2967",
+  "source_font_sha256": "4C06CDFF1A35FF2908DB2635B4B946AC10F2B52D41F151BB6554E9552EA8B58D",
+  "arena_bounds": [
+    144,
+    24,
+    624,
+    456
+  ],
+  "arena_pixels_verified": 207360,
+  "arena_rgb_sha256": "8186F74794BDEA738390C68DCEA32622FCB0B7D899B9BC4AAC5E0FF30D96A952",
+  "arena_pixel_identical": true,
+  "hud_bounds": [
+    8,
+    8,
+    136,
+    472
+  ],
+  "fields": [
+    {
+      "example": "12",
+      "number_origin": [
+        57,
+        116
+      ],
+      "window": [
+        35,
+        108,
+        76,
+        32
+      ],
+      "digit_cell": [
+        16,
+        18
+      ],
+      "name": "Score"
+    },
+    {
+      "example": "19",
+      "number_origin": [
+        56,
+        182
+      ],
+      "window": [
+        33,
+        175,
+        78,
+        32
+      ],
+      "digit_cell": [
+        16,
+        18
+      ],
+      "name": "High Score"
+    },
+    {
+      "example": "012",
+      "number_origin": [
+        64,
+        273
+      ],
+      "window": [
+        59,
+        268,
+        59,
+        27
+      ],
+      "digit_cell": [
+        16,
+        18
+      ],
+      "name": "Ruby"
+    },
+    {
+      "example": "345",
+      "number_origin": [
+        64,
+        317
+      ],
+      "window": [
+        59,
+        313,
+        59,
+        27
+      ],
+      "digit_cell": [
+        16,
+        18
+      ],
+      "name": "Sapphire"
+    },
+    {
+      "example": "678",
+      "number_origin": [
+        64,
+        362
+      ],
+      "window": [
+        59,
+        358,
+        59,
+        27
+      ],
+      "digit_cell": [
+        16,
+        18
+      ],
+      "name": "Cursed"
+    }
+  ],
+  "top_filler": [
+    144,
+    0,
+    624,
+    24
+  ],
+  "bottom_filler": [
+    144,
+    456,
+    624,
+    480
+  ],
+  "divider_filler": [
+    136,
+    24,
+    144,
+    456
+  ],
+  "right_filler": [
+    624,
+    24,
+    640,
+    456
+  ],
+  "boundary_colors": "RGB332",
+  "active_mif_changes": false,
+  "rtl_changes": false,
+  "quartus_run": false,
+  "fpga_programmed": false
+}
