@@ -104,12 +104,12 @@ module hud_counters_tb;
         key5 = 1; @(negedge clk); key5 = 0; repeat (3) @(negedge clk);
         check(running && ruby == 0 && sapphire == 0 && cursed == 0 && highLow == 5,
             "controller restart clears counters, keeps high score");
-        // Win at 20 is still driven by the original score, not the Ruby total.
+        // Win at 90 is driven by the score, not the Ruby total.
         headDR = 1; redDR = 1;
-        for (i = 0; i < 20; i = i + 1) begin newFrame(); repeat (4) @(negedge clk); end
+        for (i = 0; i < 90; i = i + 1) begin newFrame(); repeat (4) @(negedge clk); end
         repeat (3) @(negedge clk);
-        check(!running && scoreHigh == 2 && scoreLow == 0 && ruby == 12'h020 &&
-              highHigh == 2 && highLow == 0, "original win threshold and independent relic total");
+        check(!running && scoreHigh == 9 && scoreLow == 0 && ruby == 12'h090 &&
+              highHigh == 9 && highLow == 0, "win90 threshold and independent relic total");
         $display("HUD_COUNTERS_PASS: independent pulses, 000..999, saturation, resets, high score, original game events");
         testPassed = 1;
         $finish;

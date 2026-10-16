@@ -15,14 +15,14 @@ module opening_startup_tb;
         @(negedge clk);key5=1;
         repeat(4)@(negedge clk);
         key5=0;
-        for(i=0;i<20;i++)begin
+        for(i=0;i<90;i++)begin
             @(negedge clk);sof=1;red=0;
             @(negedge clk);sof=0;
             @(negedge clk);red=1;
             repeat(3)@(negedge clk);red=0;
         end
         repeat(5)@(negedge clk);
-        if(running || {sh,sl}!=8'h20)$fatal(1,"winning score setup failed");
+        if(running || {sh,sl}!=8'h90)$fatal(1,"winning score setup failed");
         key5=1;
         repeat(5)begin
             @(negedge clk);

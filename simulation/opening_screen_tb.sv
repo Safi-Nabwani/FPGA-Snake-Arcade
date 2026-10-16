@@ -126,12 +126,12 @@ module opening_screen_tb;
         keyEvent(9'h073,0);keyEvent(9'h073,1);
         check(running && startCount==2 && {sh,sl,ruby,sapphire,cursed}==0 && {hh,hl}==6 && length==4 && speed==130,
             "fresh press restarts, clears per-game state, preserves high score and gameplay scene");
-        for(i=0;i<20;i++)collect(1);
+        for(i=0;i<90;i++)collect(1);
         repeat(6)@(negedge clk);
-        check(!running && startCount==2 && {hh,hl}==8'h20 && ruby==12'h020,"win20, high score, held-key suppression");
+        check(!running && startCount==2 && {hh,hl}==8'h90 && ruby==12'h090,"win90, high score, held-key suppression");
         legacyResult();
         keyEvent(9'h073,0);keyEvent(9'h073,1);
-        check(running && startCount==3 && {hh,hl}==8'h20 && ruby==0,"victory local restart preserves high score");
+        check(running && startCount==3 && {hh,hl}==8'h90 && ruby==0,"victory local restart preserves high score");
         // All four original keypad directions, with clean starts; no decoder change.
         for(d=0;d<4;d++)begin
             @(negedge clk);resetN=0;repeat(3)@(negedge clk);resetN=1;

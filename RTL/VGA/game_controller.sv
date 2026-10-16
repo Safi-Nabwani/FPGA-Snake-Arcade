@@ -151,8 +151,8 @@ begin
 				if (gameStartPulse) begin
 					appleHitFlag <= 1'b0;
 				end
-				// Winning condition: score >= 20 (unchanged after initialization).
-				else if (score_High >= 4'd2) begin
+				// Winning condition: score >= 90 (score_High is the decimal tens).
+				else if (score_High >= 4'd9) begin
 
 					SMGame <= s_gameWon;
 
