@@ -16,7 +16,7 @@ module lpm_rom #(
     reg seen [0:LPM_NUMWORDS-1];
     reg [LPM_WIDTHAD-1:0] addressD;
     reg [4095:0] line;
-    integer fileHandle, status, location, value, count, i;
+    integer fileHandle, status, location, lastLocation, value, count, i;
     string addressRadix;
     bit decimalAddress;
     initial begin
@@ -31,15 +31,23 @@ module lpm_rom #(
             status=$sscanf(line,"ADDRESS_RADIX=%s",addressRadix);
             if (status==1)
                 decimalAddress=(addressRadix=="UNS;" || addressRadix=="DEC;");
+            // Existing WIN/LOST MIFs use legal compressed address ranges.
             if (decimalAddress)
-                status=$sscanf(line,"%d : %h;",location,value);
+                status=$sscanf(line," [%d..%d] : %h;",location,lastLocation,value);
             else
-                status=$sscanf(line,"%h : %h;",location,value);
-            if (status==2) begin
-                if (location<0 || location>=LPM_NUMWORDS || value<0 || value>=(1<<LPM_WIDTH))
+                status=$sscanf(line," [%h..%h] : %h;",location,lastLocation,value);
+            if(status!=3) begin
+                if(decimalAddress) status=$sscanf(line,"%d : %h;",location,value);
+                else status=$sscanf(line,"%h : %h;",location,value);
+                if(status==2)begin lastLocation=location;status=3;end
+            end
+            if (status==3) begin
+                if (location<0 || lastLocation<location || lastLocation>=LPM_NUMWORDS || value<0 || value>=(1<<LPM_WIDTH))
                     $fatal(1,"Invalid ROM record: %s",LPM_FILE);
-                if (seen[location]) $fatal(1,"Duplicate ROM record: %s",LPM_FILE);
-                data[location]=value; seen[location]=1; count=count+1;
+                for(i=location;i<=lastLocation;i=i+1)begin
+                    if (seen[i]) $fatal(1,"Duplicate ROM record: %s",LPM_FILE);
+                    data[i]=value;seen[i]=1;count=count+1;
+                end
             end
         end
         $fclose(fileHandle);

@@ -41,6 +41,11 @@ module game_controller (
 
 logic appleHitFlag;	// We dont want to send a pulse more than once in the same frame
 
+// Decoder supplies a held keypad-5 level (scan073). Typematic make events
+// must not restart a finished game until the player releases and presses again.
+logic key5HeldD;
+wire startPressed = key_5 && !key5HeldD;
+
 logic collision;		// The losing condition
 
 logic collision_SnakeHead_RedApple;		//
@@ -68,7 +73,7 @@ assign collision_SnakeHead_BlackApple =
 //--------------------- Game FSM ---------------------
 
 enum logic [1:0] {
-	s_idle,
+	s_menu,
 	s_gameStarted,
 	s_gameWon,
 	s_gameLost
@@ -80,7 +85,8 @@ always_ff @(posedge clk or negedge resetN)
 begin
 	if (!resetN) begin	//reset values
 
-		SMGame <= s_idle;
+		SMGame <= s_menu;
+		key5HeldD <= 1'b0;
 
 		appleHitFlag <= 1'b0;
 
@@ -97,6 +103,7 @@ begin
 	end
 
 	else begin
+		key5HeldD <= key_5;
 
 		// Default pulse values
 		gameStartPulse <= 1'b0;
@@ -117,12 +124,12 @@ begin
 
 //--------------------- Idle State ---------------------
 
-			s_idle: begin
+			s_menu: begin
 
 				gameStarted <= 1'b0;
 				appleHitFlag <= 1'b0;
 
-				if (key_5) begin
+				if (startPressed) begin
 
 					SMGame <= s_gameStarted;
 
@@ -139,8 +146,13 @@ begin
 
 				gameStarted <= 1'b1;
 
-				// Winning condition: score >= 20
-				if (score_High >= 4'd2) begin
+				// Consumers clear score/trail on this same start-pulse edge.
+				// Do not evaluate the previous game's score/collisions until then.
+				if (gameStartPulse) begin
+					appleHitFlag <= 1'b0;
+				end
+				// Winning condition: score >= 20 (unchanged after initialization).
+				else if (score_High >= 4'd2) begin
 
 					SMGame <= s_gameWon;
 
@@ -205,7 +217,7 @@ begin
 				gameStarted <= 1'b0;
 				appleHitFlag <= 1'b0;
 
-				if (key_5) begin
+				if (startPressed) begin
 
 					SMGame <= s_gameStarted;
 
@@ -223,7 +235,7 @@ begin
 				gameStarted <= 1'b0;
 				appleHitFlag <= 1'b0;
 
-				if (key_5) begin
+				if (startPressed) begin
 
 					SMGame <= s_gameStarted;
 
@@ -238,7 +250,7 @@ begin
 
 			default: begin
 
-				SMGame <= s_idle;
+				SMGame <= s_menu;
 
 				gameStarted <= 1'b0;
 				appleHitFlag <= 1'b0;
