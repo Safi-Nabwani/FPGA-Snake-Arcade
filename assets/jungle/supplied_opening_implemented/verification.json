@@ -1,0 +1,119 @@
+{
+  "source_sha256": {
+    "user_reference_background_126x120.png": "aa2c1e1dde1f6affb07d8950bf2481c4196e663e5b573c19d5d88912db3189da",
+    "overgrown_temple_torchlit_frame.png": "3a0ade6ac9bc4c82cc958c1e0fb90715b226b2f0392ee14f04c24217c6636936",
+    "snake_arcade_temple_menu.png": "8520589e981263c08c0962132745548f0d24bc054b0e95afa457935bce1e0787"
+  },
+  "sidebar_bounds": [
+    0,
+    0,
+    144,
+    480
+  ],
+  "menu_bounds": [
+    144,
+    0,
+    640,
+    480
+  ],
+  "background_pixels": 14880,
+  "native_detail_pixels": 89596,
+  "detail_address_width": 17,
+  "regions": [
+    {
+      "name": "title",
+      "x": 120,
+      "y": 58,
+      "width": 264,
+      "height": 108,
+      "offset": 14880
+    },
+    {
+      "name": "controls_heading",
+      "x": 34,
+      "y": 204,
+      "width": 116,
+      "height": 25,
+      "offset": 43392
+    },
+    {
+      "name": "keys",
+      "x": 37,
+      "y": 238,
+      "width": 105,
+      "height": 98,
+      "offset": 46292
+    },
+    {
+      "name": "control_caption",
+      "x": 20,
+      "y": 338,
+      "width": 140,
+      "height": 36,
+      "offset": 56582
+    },
+    {
+      "name": "relics_heading",
+      "x": 194,
+      "y": 204,
+      "width": 120,
+      "height": 25,
+      "offset": 61622
+    },
+    {
+      "name": "ruby",
+      "x": 196,
+      "y": 236,
+      "width": 134,
+      "height": 43,
+      "offset": 64622
+    },
+    {
+      "name": "sapphire",
+      "x": 196,
+      "y": 281,
+      "width": 134,
+      "height": 42,
+      "offset": 70384
+    },
+    {
+      "name": "cursed",
+      "x": 190,
+      "y": 328,
+      "width": 140,
+      "height": 44,
+      "offset": 76012
+    },
+    {
+      "name": "goal_heading",
+      "x": 389,
+      "y": 204,
+      "width": 76,
+      "height": 25,
+      "offset": 82172
+    },
+    {
+      "name": "goal",
+      "x": 379,
+      "y": 242,
+      "width": 94,
+      "height": 110,
+      "offset": 84072
+    },
+    {
+      "name": "start",
+      "x": 100,
+      "y": 414,
+      "width": 296,
+      "height": 34,
+      "offset": 94412
+    }
+  ],
+  "total_bits": 835808,
+  "estimated_menu_blocks": 103,
+  "estimated_project_blocks": 318,
+  "estimate_not_fitted": true,
+  "existing_hud_pixel_identical": true,
+  "alpha_composited": true,
+  "supplied_files_only": true
+}

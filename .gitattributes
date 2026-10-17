@@ -10,3 +10,4 @@ RTL/mifs/hud_panel_rgb332.mif -text
 RTL/mifs/hud_panel_alpha.mif -text
 RTL/mifs/hud_frame_rgb332.mif -text
 RTL/mifs/opening_screen_rgb332.mif -text
+RTL/mifs/opening_supplied_atlas.mif -text

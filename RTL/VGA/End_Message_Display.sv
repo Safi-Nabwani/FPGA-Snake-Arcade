@@ -54,20 +54,28 @@ logic [7:0] lostRGB;
 // or changing BDF interfaces. Existing WIN/LOST screens and priorities remain.
 logic menuActive;
 logic menuModeD, menuModeDD, menuVisibleD, menuVisibleDD;
-logic [18:0] menuAddress, menuAddressD;
+logic [16:0] menuAddress, menuAddressD;
+logic [13:0] menuBackgroundAddress;
+logic [8:0] menuX,menuY;
+wire [10:0] menuLocalX=pixelX-11'd144;
 logic [7:0] menuRGB;
 logic menuVisible;
-assign menuVisible = pixelX < 11'd640 && pixelY < 11'd480;
-assign menuAddress = menuVisible ?
-    (({10'b0,pixelY[8:0]} << 9) + ({10'b0,pixelY[8:0]} << 7) +
-     {9'b0,pixelX[9:0]}) : 19'd0;
+// The existing live HUD owns x[0,144). MENU never masks or duplicates it.
+assign menuVisible = pixelX>=11'd144 && pixelX<11'd640 && pixelY<11'd480;
+assign menuX=menuVisible ? menuLocalX[8:0] : 9'd0;
+assign menuY=menuVisible ? pixelY[8:0] : 9'd0;
+// Right area496x480:124x120 RGB332 base displayed4x, then native detail patches.
+//124=128-4, so the background stride needs shifts only, never a divider.
+assign menuBackgroundAddress=({7'b0,menuY[8:2]} << 7) -
+                            ({7'b0,menuY[8:2]} << 2) + {7'b0,menuX[8:2]};
+`include "RTL/VGA/opening_supplied_layout.svh"
 
 always_ff @(posedge clk or negedge resetN) begin
     if (!resetN) begin
         menuActive <= 1'b1;
         menuModeD <= 1'b1; menuModeDD <= 1'b1;
         menuVisibleD <= 1'b0; menuVisibleDD <= 1'b0;
-        menuAddressD <= 19'd0;
+        menuAddressD <= 17'd0;
     end else begin
         if (gameStartPulse) menuActive <= 1'b0;
         menuModeD <= menuActive;
@@ -79,9 +87,10 @@ always_ff @(posedge clk or negedge resetN) begin
 end
 
 // Stage1 address + stage2 vendor-ROM address register match the HUD/head path.
-// Full screen is opaque: neither00 norFF is a transparency key.
-lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(19), .LPM_NUMWORDS(307200),
-    .LPM_FILE("RTL/mifs/opening_screen_rgb332.mif"), .LPM_TYPE("LPM_ROM"),
+// Only the right area is opaque;00/FF are colors, not transparency. Background
+// and supplied native detail share ONE ROM/read path with the original latency.
+lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(MENU_ADDRESS_WIDTH), .LPM_NUMWORDS(MENU_ROM_DEPTH),
+    .LPM_FILE("RTL/mifs/opening_supplied_atlas.mif"), .LPM_TYPE("LPM_ROM"),
     .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
     .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
     .INTENDED_DEVICE_FAMILY("Cyclone V")) menu_rom

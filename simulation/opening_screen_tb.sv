@@ -36,7 +36,19 @@ module opening_screen_tb;
     // Every competing layer is asserted to prove opaque menu/message priority.
     objects_mux mux(clk,resetN,1'b1,8'h11,1'b1,8'h22,1'b1,8'h33,
         1'b1,8'h44,1'b1,8'h55,messageDR,messageRGB,8'h66,muxRGB);
+    // Actual unmodified HUD path, including live counters, not a menu sidebar ROM.
+    wire signed [10:0] sx,sy,hix,hiy;
+    wire [10:0] sox,soy,hox,hoy;
+    wire ss,hs,sd,hd;
+    wire [7:0] unusedS,unusedH,srgb,hrgb,sceneRGB;
+    ScoreConstants hudOrigins(sx,sy,hix,hiy);
+    square_object #(.OBJECT_WIDTH_X(32),.OBJECT_HEIGHT_Y(18)) scoreBox(clk,resetN,px,py,sx,sy,sox,soy,ss,unusedS);
+    square_object #(.OBJECT_WIDTH_X(32),.OBJECT_HEIGHT_Y(18)) highBox(clk,resetN,px,py,hix,hiy,hox,hoy,hs,unusedH);
+    NumbersBitMap hud(clk,resetN,sox,soy,ss,sl,sh,hox,hoy,hs,hl,hh,px,py,ruby,sapphire,cursed,sd,srgb,hd,hrgb);
+    objects_mux scene(clk,resetN,1'b0,8'h11,1'b0,8'h22,sd,srgb,hd,hrgb,
+        1'b0,8'h55,messageDR,messageRGB,8'h04,sceneRGB);
     reg [7:0] expected[0:307199];
+    reg [7:0] composite[0:307199];
     bit seen[0:307199];
     integer checks=0,startCount=0,prevX=1023,prevY=1023,prevPrevX=1023,prevPrevY=1023;
     integer lastRGB=0,visits=0,opaqueBlack=0,opaqueWhite=0,x,y,i,d,j;
@@ -48,6 +60,9 @@ module opening_screen_tb;
     endtask
     function automatic bit visible(input integer x,y);
         return x>=0 && x<640 && y>=0 && y<480;
+    endfunction
+    function automatic bit menuPixel(input integer x,y);
+        return x>=144 && x<640 && y>=0 && y<480;
     endfunction
     task automatic keyEvent(input logic [8:0] c,input bit pressKey);
         @(negedge clk);code=c;makeKey=pressKey;breakKey=!pressKey;
@@ -69,18 +84,20 @@ module opening_screen_tb;
     task automatic scan(input integer nx,ny);
         @(negedge clk);px=nx;py=ny;sof=(nx==0);
         @(posedge clk);#1;
-        check(messageDR===visible(prevX,prevY),"MENU DR bounds/latency");
-        check(display.menuAddress<307200 && display.menu_rom.addressD<307200,"legal menu ROM addresses including blanking");
-        if(visible(prevX,prevY)) begin
+        check(messageDR===menuPixel(prevX,prevY),"MENU right-only DR bounds/latency; no sidebar coverage");
+        check(display.menuAddress<104476 && display.menu_rom.addressD<104476,"legal combined atlas addresses including blanking");
+        if(menuPixel(prevX,prevY)) begin
             check(messageRGB===expected[prevY*640+prevX],"actual MIF pixel and independent full-screen expectation aligned");
             if(activeScan) begin
-                check(!seen[display.menu_rom.addressD],"row-major addresses appear once");
-                seen[display.menu_rom.addressD]=1;visits++;
+                check(!seen[prevY*640+prevX],"right-area output pixels appear once");
+                seen[prevY*640+prevX]=1;visits++;
                 if(messageRGB==0)opaqueBlack++;
                 if(messageRGB==255)opaqueWhite++;
             end
         end
-        if(visible(prevPrevX,prevPrevY))check(muxRGB===lastRGB[7:0],"opaque MENU wins original mux, one further stage");
+        if(menuPixel(prevPrevX,prevPrevY))check(muxRGB===lastRGB[7:0],"opaque right MENU wins original mux, one further stage");
+        if(visible(prevPrevX,prevPrevY))check(sceneRGB===composite[prevPrevY*640+prevPrevX],
+            "full actual-MIF scene: existing HUD unchanged on left, supplied opening on right");
         check(!running && !startEvent && !endEvent && !redEvent && !blueEvent && !blackEvent,
             "all gameplay/collision/collection events disabled in MENU");
         check(hx==384 && hy==240 && length==4 && speed==130,"no movement/length/speed changes during menu SOFs and held directions");
@@ -95,7 +112,8 @@ module opening_screen_tb;
         end
     endtask
     initial begin
-        $readmemh("db/opening_screen_fixture/expected.hex",expected);
+        $readmemh("db/supplied_opening_fixture/expected.hex",expected);
+        $readmemh("db/supplied_opening_fixture/composite.hex",composite);
         for(i=0;i<307200;i++)seen[i]=0;
         #12;resetN=1;
         keyEvent(9'h075,1); // Original keypad8, held through the whole menu.
@@ -104,10 +122,10 @@ module opening_screen_tb;
         activeScan=1;
         for(y=0;y<480;y++)for(x=0;x<640;x++)scan(x,y);
         scan(1023,1023);scan(1023,1023);activeScan=0;
-        check(visits==307200 && opaqueBlack>0 && opaqueWhite>0,"entire opaque menu covered, including00 andFF");
-        for(i=0;i<307200;i++)check(seen[i],"complete menu address coverage");
+        check(visits==238080 && opaqueWhite>0,"entire238080-pixel right opening covered, including opaqueFF");
+        for(i=0;i<307200;i++)check(seen[i]===(i%640>=144),"complete right-area coverage; zero sidebar masking");
         scan(640,0);scan(0,480);scan(2047,2047);scan(1023,1023);scan(1023,1023);
-        $display("OPENING_RENDER_PASS:307200 pixels;opaque00/FF;aligned ROM/DR/mux;menu freezes motion/events");
+        $display("OPENING_RENDER_PASS:238080 supplied-menu pixels +69120 existing-HUD pixels; aligned ROM/DR/mux;menu freezes motion/events");
         wall=0;selfHit=0;redDR=0;blueDR=0;blackDR=0;sof=0;
         keyEvent(9'h075,0);
         keyEvent(9'h073,1);
