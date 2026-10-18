@@ -594,7 +594,7 @@ agreement for further details.
 	)
 )
 (symbol
-	(rect -696 112 -448 288)
+	(rect -696 112 -448 384)
 	(text "end_message_display" (rect 5 0 114 12)(font "Arial" ))
 	(text "inst17" (rect 8 160 37 172)(font "Arial" ))
 	(port
@@ -660,8 +660,43 @@ agreement for further details.
 		(text "message_RGB[7..0]" (rect 143 43 227 55)(font "Arial" ))
 		(line (pt 248 48)(pt 232 48)(line_width 3))
 	)
+	(port
+		(pt 0 160)
+		(input)
+		(text "scoreLow[3..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "scoreLow[3..0]" (rect 21 155 210 167)(font "Arial" ))
+		(line (pt 0 160)(pt 16 160)(line_width 3))
+	)
+	(port
+		(pt 0 176)
+		(input)
+		(text "scoreHigh[3..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "scoreHigh[3..0]" (rect 21 171 210 183)(font "Arial" ))
+		(line (pt 0 176)(pt 16 176)(line_width 3))
+	)
+	(port
+		(pt 0 192)
+		(input)
+		(text "rubyCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "rubyCountBCD[11..0]" (rect 21 187 210 199)(font "Arial" ))
+		(line (pt 0 192)(pt 16 192)(line_width 3))
+	)
+	(port
+		(pt 0 208)
+		(input)
+		(text "sapphireCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "sapphireCountBCD[11..0]" (rect 21 203 210 215)(font "Arial" ))
+		(line (pt 0 208)(pt 16 208)(line_width 3))
+	)
+	(port
+		(pt 0 224)
+		(input)
+		(text "cursedCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "cursedCountBCD[11..0]" (rect 21 219 210 231)(font "Arial" ))
+		(line (pt 0 224)(pt 16 224)(line_width 3))
+	)
 	(drawing
-		(rectangle (rect 16 16 232 160))
+		(rectangle (rect 16 16 232 256))
 	)
 )
 (symbol
@@ -912,7 +947,7 @@ agreement for further details.
 	)
 )
 (symbol
-	(rect 72 720 360 912)
+	(rect 72 720 360 960)
 	(text "Score_Block" (rect 5 0 76 19)(font "Intel Clear" (font_size 8)))
 	(text "inst11" (rect 8 171 36 188)(font "Intel Clear" ))
 	(port
@@ -1020,8 +1055,29 @@ agreement for further details.
 		(text "scoreHigh[3..0]" (rect 179 107 267 126)(font "Intel Clear" (font_size 8)))
 		(line (pt 288 112)(pt 272 112)(line_width 3))
 	)
+	(port
+		(pt 288 144)
+		(output)
+		(text "rubyCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "rubyCountBCD[11..0]" (rect 90 139 278 151)(font "Arial" ))
+		(line (pt 288 144)(pt 272 144)(line_width 3))
+	)
+	(port
+		(pt 288 160)
+		(output)
+		(text "sapphireCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "sapphireCountBCD[11..0]" (rect 90 155 278 167)(font "Arial" ))
+		(line (pt 288 160)(pt 272 160)(line_width 3))
+	)
+	(port
+		(pt 288 176)
+		(output)
+		(text "cursedCountBCD[11..0]" (rect 0 0 180 12)(font "Arial" ))
+		(text "cursedCountBCD[11..0]" (rect 90 171 278 183)(font "Arial" ))
+		(line (pt 288 176)(pt 272 176)(line_width 3))
+	)
 	(drawing
-		(rectangle (rect 16 16 272 176))
+		(rectangle (rect 16 16 272 224))
 	)
 )
 (symbol
@@ -2269,3 +2325,51 @@ agreement for further details.
 (rectangle (rect 528 656 1448 1000)(color 0 0 0)(line_width 3))
 (rectangle (rect -888 312 -336 640)(color 0 0 0)(line_width 3))
 (rectangle (rect -64 656 512 1000)(color 0 0 0)(line_width 3))
+(connector
+	(text "scoreLow[3..0]" (rect -832 256 -516 273)(font "Arial" ))
+	(pt -840 272)
+	(pt -696 272)
+	(bus)
+)
+(connector
+	(text "scoreHigh[3..0]" (rect -832 272 -516 289)(font "Arial" ))
+	(pt -840 288)
+	(pt -696 288)
+	(bus)
+)
+(connector
+	(text "rubyCountBCD[11..0]" (rect -832 288 -516 305)(font "Arial" ))
+	(pt -840 304)
+	(pt -696 304)
+	(bus)
+)
+(connector
+	(text "sapphireCountBCD[11..0]" (rect -832 304 -516 321)(font "Arial" ))
+	(pt -840 320)
+	(pt -696 320)
+	(bus)
+)
+(connector
+	(text "cursedCountBCD[11..0]" (rect -832 320 -516 337)(font "Arial" ))
+	(pt -840 336)
+	(pt -696 336)
+	(bus)
+)
+(connector
+	(text "rubyCountBCD[11..0]" (rect 368 848 700 865)(font "Arial" ))
+	(pt 360 864)
+	(pt 520 864)
+	(bus)
+)
+(connector
+	(text "sapphireCountBCD[11..0]" (rect 368 864 700 881)(font "Arial" ))
+	(pt 360 880)
+	(pt 520 880)
+	(bus)
+)
+(connector
+	(text "cursedCountBCD[11..0]" (rect 368 880 700 897)(font "Arial" ))
+	(pt 360 896)
+	(pt 520 896)
+	(bus)
+)

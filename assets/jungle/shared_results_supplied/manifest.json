@@ -1,0 +1,84 @@
+{
+  "design": "FPGA Snake Jungle Temple result reports",
+  "shared_geometry": {
+    "panel_x": 248,
+    "panel_y": 24,
+    "panel_width": 288,
+    "panel_height": 432,
+    "base_width": 144,
+    "base_height": 216,
+    "background_scale": 2
+  },
+  "assets": {
+    "report_shared_144x216": {
+      "width": 144,
+      "height": 216,
+      "depth": 31104,
+      "color_bits": 8,
+      "mask_bits": 0,
+      "png_sha256": "69c0b0a8458759811196ba1c34cd2f5aae3c9b2c8624aef9478d69d5c202366f",
+      "rgb332_sha256": "a17330963730fa1d0d9bba9714bce813cb682e8f016acdc3df3ebe4290d9ddfa",
+      "mask_mif_sha256": null
+    },
+    "victory_title_224x32": {
+      "width": 224,
+      "height": 32,
+      "depth": 7168,
+      "color_bits": 8,
+      "mask_bits": 1,
+      "png_sha256": "420e136a39f4bc224ed05a5f6853eda2c84c5fae4acb01b5d5726da7c007502e",
+      "rgb332_sha256": "1cbc442b2be29e1fbbfd83eec6da28af04eee1ac4ec4f7b1f28fbc2816ea4e0f",
+      "mask_mif_sha256": "7fb13752e354986f9cc5830087b3f64fa6dbf5a9cbe038abc80b3e8137a21318"
+    },
+    "defeat_title_224x32": {
+      "width": 224,
+      "height": 32,
+      "depth": 7168,
+      "color_bits": 8,
+      "mask_bits": 1,
+      "png_sha256": "20a9e9cfc8f4cbe31fc3e960655102b52f6422eab6341dc8074b9418be283964",
+      "rgb332_sha256": "9dcffc5894434c85f28b4a5012ada453d485c344928630be18e2102b0773a56f",
+      "mask_mif_sha256": "658f4f14f19c672ec1e11da90964b6edb8e6b3db9e32e794116cf0e482e2e60e"
+    },
+    "victory_emblem_160x72": {
+      "width": 160,
+      "height": 72,
+      "depth": 11520,
+      "color_bits": 8,
+      "mask_bits": 1,
+      "png_sha256": "0e16abfe83a6669b1fb94912f11380e684a574f90b363e546182973a89d0326a",
+      "rgb332_sha256": "cb3f29d486f782e4623059016956abc11912bcfb7bafe41891a44a6e82c42886",
+      "mask_mif_sha256": "3fc6b6fa74ff8e303b7da5c41320c5e8173ec9a456ba49a8f5eeeb7584379e94"
+    },
+    "defeat_emblem_160x72": {
+      "width": 160,
+      "height": 72,
+      "depth": 11520,
+      "color_bits": 8,
+      "mask_bits": 1,
+      "png_sha256": "e52540bd64c007864b2dd325b43217ccbe7c27e856a28bef5c7cedd0522c3953",
+      "rgb332_sha256": "1558470af1c402ce4877b1429da9037e29671d255b3e249dc596e3a834603aa4",
+      "mask_mif_sha256": "3fc6b6fa74ff8e303b7da5c41320c5e8173ec9a456ba49a8f5eeeb7584379e94"
+    },
+    "victory_plaque_224x32": {
+      "width": 224,
+      "height": 32,
+      "depth": 7168,
+      "color_bits": 8,
+      "mask_bits": 0,
+      "png_sha256": "45c3678d89c742838554368d083a57233721484a7710fbd09edf3d2c58e2c412",
+      "rgb332_sha256": "f51b43a94fa7df35b05161a6bdbbaef8d78bb021c5f775a0bac61b79a997e14d",
+      "mask_mif_sha256": null
+    },
+    "defeat_score_label_136x16": {
+      "width": 136,
+      "height": 16,
+      "depth": 2176,
+      "color_bits": 8,
+      "mask_bits": 1,
+      "png_sha256": "10799345103eeec2be490781e539ef367d8ebb8bf903b2a348f3dec17cc81753",
+      "rgb332_sha256": "60673eb5d8f0bc2313a65ec767fecdaab94179ef1ddbca21dc7af9fefe1a5e7e",
+      "mask_mif_sha256": "48358265d3a942ace7181caa26d278389fda007f5c9d790e8a8bf994392a2a6e"
+    }
+  }
+}

@@ -11,6 +11,8 @@ module end_message_display (
 	input logic gameWonPulse,
 	input logic gameOverPulse,
 	input logic gameStartPulse,
+	input logic [3:0] scoreLow, scoreHigh,
+	input logic [11:0] rubyCountBCD, sapphireCountBCD, cursedCountBCD,
 
 //------------- Outputs -----------
 
@@ -19,39 +21,9 @@ module end_message_display (
 
 );
 
-//------------- Panel Parameters -----------
-
-localparam int PANEL_LEFT   = 40;
-localparam int PANEL_TOP    = 190;
-localparam int PANEL_WIDTH  = 560;
-localparam int PANEL_HEIGHT = 90;
-
-localparam int ROM_DEPTH = PANEL_WIDTH * PANEL_HEIGHT;
-
-//------------- Message States -----------
-
-//Define params to improve readability and clearity
-localparam logic [1:0] MSG_NONE = 2'd0;
-localparam logic [1:0] MSG_WIN  = 2'd1;
-localparam logic [1:0] MSG_LOST = 2'd2;
-
-//------------- Internal Signals -----------
-
-logic [1:0] messageState;
-
-logic insidePanel;
-
-logic [10:0] localX;
-logic [10:0] localY;
-
-logic [15:0] romAddress;
-
-logic [7:0] winRGB;
-logic [7:0] lostRGB;
-
 // Initial MENU already disables gameplay in game_controller. This drawing-only
 // latch mirrors reset -> first gameStartPulse, without adding gameplay feedback
-// or changing BDF interfaces. Existing WIN/LOST screens and priorities remain.
+// or changing gameplay. The result branch below uses display-only statistic taps.
 logic menuActive;
 logic menuModeD, menuModeDD, menuVisibleD, menuVisibleDD;
 logic [16:0] menuAddress, menuAddressD;
@@ -96,124 +68,19 @@ lpm_rom #(.LPM_WIDTH(8), .LPM_WIDTHAD(MENU_ADDRESS_WIDTH), .LPM_NUMWORDS(MENU_RO
     .INTENDED_DEVICE_FAMILY("Cyclone V")) menu_rom
     (.address(menuAddressD), .inclock(clk), .q(menuRGB));
 
-//------------- Area Detection -----------
-
-assign insidePanel =
-	(pixelX >= PANEL_LEFT) &&
-	(pixelX <  PANEL_LEFT + PANEL_WIDTH) &&
-	(pixelY >= PANEL_TOP) &&
-	(pixelY <  PANEL_TOP + PANEL_HEIGHT);
-
-//------------- Address Calculation -----------
-
+// Shared results renderer owns only x[248,536),y[24,456).
+wire reportDR;
+wire [7:0] reportRGB;
+results_report_renderer results (
+    .clk(clk),.resetN(resetN),.pixelX(pixelX),.pixelY(pixelY),
+    .gameWonPulse(gameWonPulse),.gameOverPulse(gameOverPulse),.gameStartPulse(gameStartPulse),
+    .scoreLow(scoreLow),.scoreHigh(scoreHigh),.rubyCountBCD(rubyCountBCD),
+    .sapphireCountBCD(sapphireCountBCD),.cursedCountBCD(cursedCountBCD),
+    .report_DR(reportDR),.report_RGB(reportRGB));
 always_comb begin
-
-	localX = 11'd0;
-	localY = 11'd0;
-	romAddress = 16'd0;
-
-	if (insidePanel) begin
-
-		localX = pixelX - PANEL_LEFT;
-		localY = pixelY - PANEL_TOP;
-
-		romAddress =
-			(localY * PANEL_WIDTH) + localX;
-
-	end
-
+    message_DR=menuModeDD ? menuVisibleDD : reportDR;
+    message_RGB=menuModeDD ? menuRGB : reportRGB;
 end
-
-//------------- Message State Register -----------
-
-always_ff @(posedge clk or negedge resetN)
-begin
-	if (!resetN) begin
-
-		messageState <= MSG_NONE;
-
-	end
-
-	else begin
-
-		if (gameStartPulse) begin
-			messageState <= MSG_NONE;
-		end
-
-		else if (gameWonPulse) begin
-			messageState <= MSG_WIN;
-		end
-
-		else if (gameOverPulse) begin
-			messageState <= MSG_LOST;
-		end
-
-	end
-end
-
-//------------- Win Message ROM -------------
-
-lpm_rom #(
-	.LPM_WIDTH              (8),
-	.LPM_WIDTHAD            (16),
-	.LPM_NUMWORDS           (ROM_DEPTH),
-	.LPM_FILE               ("RTL/mifs/end_message_win.mif"),
-	.LPM_TYPE               ("LPM_ROM"),
-	.LPM_ADDRESS_CONTROL    ("REGISTERED"),
-	.LPM_OUTDATA            ("UNREGISTERED"),
-	.AUTO_CARRY_CHAINS      ("ON"),
-	.AUTO_CASCADE_BUFFERS   ("ON"),
-	.INTENDED_DEVICE_FAMILY ("Cyclone V")
-) win_rom_inst (
-	.address (romAddress),
-	.inclock (clk),
-	.q       (winRGB)
-);
-
-//------------- Lost Message ROM -------------
-
-lpm_rom #(
-	.LPM_WIDTH              (8),
-	.LPM_WIDTHAD            (16),
-	.LPM_NUMWORDS           (ROM_DEPTH),
-	.LPM_FILE               ("RTL/mifs/end_message_lost.mif"),
-	.LPM_TYPE               ("LPM_ROM"),
-	.LPM_ADDRESS_CONTROL    ("REGISTERED"),
-	.LPM_OUTDATA            ("UNREGISTERED"),
-	.AUTO_CARRY_CHAINS      ("ON"),
-	.AUTO_CASCADE_BUFFERS   ("ON"),
-	.INTENDED_DEVICE_FAMILY ("Cyclone V")
-) lost_rom_inst (
-	.address (romAddress),
-	.inclock (clk),
-	.q       (lostRGB)
-);
-
-//------------- Output Logic -----------
-
-always_comb begin
-
-	message_DR = 1'b0;
-	message_RGB = 8'h00;
-
-	if (menuModeDD) begin
-        message_DR = menuVisibleDD;
-        message_RGB = menuRGB;
-    end
-	else if (insidePanel && (messageState == MSG_WIN)) begin
-
-		message_DR = 1'b1;
-		message_RGB = winRGB;
-
-	end
-
-	else if (insidePanel && (messageState == MSG_LOST)) begin
-
-		message_DR = 1'b1;
-		message_RGB = lostRGB;
-
-	end
-
-end
-
 endmodule
+
+`include "RTL/VGA/results_report_renderer.svh"

@@ -1,0 +1,364 @@
+{
+  "baseline": {
+    "stages": {
+      "map": {
+        "errors": 0,
+        "warnings": 243,
+        "codes": {
+          "10036": 2,
+          "10230": 42,
+          "13046": 7,
+          "13049": 156,
+          "13004": 1,
+          "13310": 5,
+          "13024": 1,
+          "13410": 29
+        }
+      },
+      "fit": {
+        "errors": 0,
+        "warnings": 91,
+        "codes": {
+          "15714": 1,
+          "169085": 1,
+          "335093": 1,
+          "332174": 23,
+          "332049": 28,
+          "15705": 1,
+          "15706": 35,
+          "171167": 1
+        }
+      },
+      "sta": {
+        "errors": 0,
+        "warnings": 52,
+        "codes": {
+          "335093": 1,
+          "332174": 23,
+          "332049": 28
+        }
+      },
+      "asm": {
+        "errors": 0,
+        "warnings": 0,
+        "codes": {}
+      }
+    },
+    "timing": [
+      {
+        "check": "Slow 1100mV 85C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 7.242,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.281,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.67,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.627,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 6.85,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.254,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.673,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.605,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 17.505,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.167,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.336,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.748,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 18.84,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.132,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.286,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.75,
+        "tns": 0.0
+      }
+    ],
+    "worst_setup": 6.85,
+    "worst_hold": 0.132,
+    "resources": {
+      "Logic utilization (in ALMs)": "7,063 / 41,910 ( 17 % )",
+      "Total registers": "5316",
+      "Total pins": "91 / 499 ( 18 % )",
+      "Total block memory bits": "2,543,520 / 5,662,720 ( 45 % )",
+      "Total RAM Blocks": "319 / 553 ( 58 % )",
+      "Total DSP Blocks": "1 / 112 ( < 1 % )",
+      "Total PLLs": "1 / 15 ( 7 % )"
+    }
+  },
+  "current": {
+    "stages": {
+      "map": {
+        "errors": 0,
+        "warnings": 242,
+        "codes": {
+          "10036": 2,
+          "10230": 39,
+          "13046": 7,
+          "13049": 158,
+          "13004": 1,
+          "13310": 5,
+          "13024": 1,
+          "13410": 29
+        }
+      },
+      "fit": {
+        "errors": 0,
+        "warnings": 91,
+        "codes": {
+          "15714": 1,
+          "169085": 1,
+          "335093": 1,
+          "332174": 23,
+          "332049": 28,
+          "15705": 1,
+          "15706": 35,
+          "171167": 1
+        }
+      },
+      "sta": {
+        "errors": 0,
+        "warnings": 52,
+        "codes": {
+          "335093": 1,
+          "332174": 23,
+          "332049": 28
+        }
+      },
+      "asm": {
+        "errors": 0,
+        "warnings": 0,
+        "codes": {}
+      }
+    },
+    "timing": [
+      {
+        "check": "Slow 1100mV 85C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 9.117,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.3,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.67,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.633,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 8.772,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.283,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.673,
+        "tns": 0.0
+      },
+      {
+        "check": "Slow 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.608,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 18.565,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.176,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.336,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 85C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.753,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Setup",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 19.777,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Hold",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 0.162,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]",
+        "slack": 0.793,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Minimum Pulse Width",
+        "clock": "CLOCK_50",
+        "slack": 9.286,
+        "tns": 0.0
+      },
+      {
+        "check": "Fast 1100mV 0C Model Minimum Pulse Width",
+        "clock": "inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk",
+        "slack": 14.753,
+        "tns": 0.0
+      }
+    ],
+    "worst_setup": 8.772,
+    "worst_hold": 0.162,
+    "resources": {
+      "Logic utilization (in ALMs)": "7,287 / 41,910 ( 17 % )",
+      "Total registers": "5418",
+      "Total pins": "91 / 499 ( 18 % )",
+      "Total block memory bits": "2,430,176 / 5,662,720 ( 43 % )",
+      "Total RAM Blocks": "306 / 553 ( 55 % )",
+      "Total DSP Blocks": "0 / 112 ( 0 % )",
+      "Total PLLs": "1 / 15 ( 7 % )"
+    }
+  },
+  "measured_total_m10k": 306,
+  "measured_results_m10k": 87,
+  "verified_compilation_inputs": 116,
+  "obsolete_result_roms_removed": true
+}

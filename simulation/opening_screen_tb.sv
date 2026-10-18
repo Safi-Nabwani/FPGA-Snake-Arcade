@@ -31,8 +31,7 @@ module opening_screen_tb;
         redEvent,blueEvent,blackEvent,bodyDR,bodyRGB,length,bodySelf);
     wire messageDR,legacyDR;
     wire [7:0] messageRGB,legacyRGB,muxRGB;
-    end_message_display display(clk,resetN,px,py,won,lost,startEvent,messageDR,messageRGB);
-    legacy_end_message_display previous(clk,resetN,px,py,won,lost,startEvent,legacyDR,legacyRGB);
+    end_message_display display(clk,resetN,px,py,won,lost,startEvent,sl,sh,ruby,sapphire,cursed,messageDR,messageRGB);
     // Every competing layer is asserted to prove opaque menu/message priority.
     objects_mux mux(clk,resetN,1'b1,8'h11,1'b1,8'h22,1'b1,8'h33,
         1'b1,8'h44,1'b1,8'h55,messageDR,messageRGB,8'h66,muxRGB);
@@ -104,12 +103,12 @@ module opening_screen_tb;
         check({sh,sl,hh,hl,ruby,sapphire,cursed}==0,"menu initial counters/score/high score");
         prevPrevX=prevX;prevPrevY=prevY;lastRGB=messageRGB;prevX=nx;prevY=ny;
     endtask
-    task automatic legacyResult;
-        for(y=188;y<282;y++)for(x=38;x<602;x++) begin
-            @(negedge clk);px=x;py=y;
-            @(posedge clk);#1;
-            check(messageDR===legacyDR && messageRGB===legacyRGB,"existing WIN/LOST ROMs/requests/colors unchanged after menu");
-        end
+    task automatic sharedResult;
+        check(display.results.statisticsReady && display.results.resultState!=0,
+            "new shared result renderer retains the controller terminal state");
+        check(display.results.finalScoreBCD=={sh,sl} && display.results.finalRubyBCD==ruby &&
+              display.results.finalSapphireBCD==sapphire && display.results.finalCursedBCD==cursed,
+            "new terminal report captures original score and counters after updates settle");
     endtask
     initial begin
         $readmemh("db/supplied_opening_fixture/expected.hex",expected);
@@ -140,14 +139,14 @@ module opening_screen_tb;
         check({sh,sl}==6 && cursed==1 && length==14 && speed==159,"Cursed -5score/+5length/+10speed");
         wall=1;repeat(8)@(negedge clk);wall=0;
         check(!running && startCount==1 && {hh,hl}==6,"held5 cannot auto-restart defeat; high score captured");
-        legacyResult();
+        sharedResult();
         keyEvent(9'h073,0);keyEvent(9'h073,1);
         check(running && startCount==2 && {sh,sl,ruby,sapphire,cursed}==0 && {hh,hl}==6 && length==4 && speed==130,
             "fresh press restarts, clears per-game state, preserves high score and gameplay scene");
         for(i=0;i<90;i++)collect(1);
         repeat(6)@(negedge clk);
         check(!running && startCount==2 && {hh,hl}==8'h90 && ruby==12'h090,"win90, high score, held-key suppression");
-        legacyResult();
+        sharedResult();
         keyEvent(9'h073,0);keyEvent(9'h073,1);
         check(running && startCount==3 && {hh,hl}==8'h90 && ruby==0,"victory local restart preserves high score");
         // All four original keypad directions, with clean starts; no decoder change.
@@ -170,7 +169,7 @@ module opening_screen_tb;
                 3:check(hy>240 && hx==384,"unchanged DOWN control");
             endcase
         end
-        $display("OPENING_STATE_PASS:keypad073/typematic/release;four directions;menu/play/reset;score/highscore/relics/length/speed;legacy result screens");
+        $display("OPENING_STATE_PASS:keypad073/typematic/release;four directions;menu/play/reset;score/highscore/relics/length/speed;shared result snapshots");
         $display("OPENING_SCREEN_PASS:%0d checks;no physical FPGA verification",checks);
         testPassed=1;$finish;
     end
