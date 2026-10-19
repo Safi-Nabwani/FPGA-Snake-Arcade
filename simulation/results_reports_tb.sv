@@ -41,7 +41,7 @@ module results_reports_tb;
     // Both muxes have identical live HUD/other inputs; only the report differs.
     objects_mux scene(clk,resetN,1'b0,8'h11,1'b0,8'h22,sd,srgb,hd,hrgb,1'b0,8'h55,dr,color,8'h04,sceneColor);
     objects_mux baseline(clk,resetN,1'b0,8'h11,1'b0,8'h22,sd,srgb,hd,hrgb,1'b0,8'h55,1'b0,8'h00,8'h04,baseColor);
-    reg [7:0] victory[0:124415],defeat[0:124415];
+    reg [8:0] victory[0:124415],defeat[0:124415];
     reg font[0:8191];
     integer checks=0,x,y,i,j,px1=1023,py1=1023,px2=1023,py2=1023;
     integer expectedState=0;
@@ -54,37 +54,53 @@ module results_reports_tb;
     function automatic bit insidePanel(input integer xx,yy);
         return xx>=248 && xx<536 && yy>=24 && yy<456;
     endfunction
-    function automatic logic [7:0] expectedPixel(input integer xx,yy);
-        integer row,dx,dy,digit,addr;
+    function automatic logic [8:0] expectedPixel(input integer xx,yy);
+        integer row,dx,dy,digit,addr,fx,fy;
         logic [11:0] value;
-        logic [7:0] ink,base;
+        logic [7:0] ink;
+        logic [8:0] base;
         begin
             addr=(yy-24)*288+xx-248;
             base=expectedState==1?victory[addr]:defeat[addr];
             row=-1;dx=0;dy=0;digit=0;value=0;ink=0;
-            if(expectedState==2 && xx>=456 && xx<488 && yy>=171 && yy<189) begin
-                row=0;dx=xx-456;dy=yy-171;ink=8'hF9;
-                digit=dx<16?expectedScore[7:4]:expectedScore[3:0];
-            end else if(xx>=440 && xx<488) begin
-                dx=xx-440;
-                if(yy>=235 && yy<253)begin row=1;dy=yy-235;value=expectedRuby;ink=8'hED;end
-                else if(yy>=291 && yy<309)begin row=2;dy=yy-291;value=expectedSapphire;ink=8'h57;end
-                else if(yy>=347 && yy<365)begin row=3;dy=yy-347;value=expectedCursed;ink=8'hB3;end
-                if(row>0)digit=dx<16?value[11:8]:dx<32?value[7:4]:value[3:0];
+            if(expectedState==1)begin
+                if(xx>=438 && xx<474 && yy>=290 && yy<304)begin row=1;dx=xx-438;dy=yy-290;value=expectedRuby;ink=8'hED;end
+                else if(xx>=437 && xx<473 && yy>=331 && yy<345)begin row=2;dx=xx-437;dy=yy-331;value=expectedSapphire;ink=8'h57;end
+                else if(xx>=437 && xx<473 && yy>=371 && yy<385)begin row=3;dx=xx-437;dy=yy-371;value=expectedCursed;ink=8'hB3;end
+            end else begin
+                if(xx>=443 && xx<467 && yy>=230 && yy<244)begin
+                    row=0;dx=xx-443;dy=yy-230;ink=8'hF9;
+                    digit=dx<12?expectedScore[7:4]:expectedScore[3:0];
+                end else if(xx>=431 && xx<467)begin
+                    dx=xx-431;
+                    if(yy>=286 && yy<300)begin row=1;dy=yy-286;value=expectedRuby;ink=8'hED;end
+                    else if(yy>=324 && yy<338)begin row=2;dy=yy-324;value=expectedSapphire;ink=8'h57;end
+                    else if(yy>=363 && yy<377)begin row=3;dy=yy-363;value=expectedCursed;ink=8'hB3;end
+                end
             end
-            if(row>=0 && font[digit*512+(dy+6)*16+dx%16])return ink;
+            if(row>0)digit=dx<12?value[11:8]:dx<24?value[7:4]:value[3:0];
+            // Independent arithmetic nearest-neighbor reference, not RTL LUTs.
+            fx=((2*(dx%12)+1)*16)/24;
+            fy=6+((2*dy+1)*18)/28;
+            if(row>=0 && font[digit*512+fy*16+fx])return {1'b1,ink};
             return base;
         end
+    endfunction
+    function automatic bit expectedDR(input integer xx,yy);
+        logic [8:0] pixel;
+        if(!insidePanel(xx,yy))return 0;
+        pixel=expectedPixel(xx,yy);
+        return pixel[8];
     endfunction
     task automatic scan(input integer nx,ny);
         @(negedge clk);px=nx;py=ny;
         @(posedge clk);#1;
-        check(dr===insidePanel(px1,py1),"two-stage report request; panel-only, never HUD");
-        if(insidePanel(px1,py1))check(color===expectedPixel(px1,py1),"actual supplied MIF/mask/font pixel aligned");
-        if(insidePanel(px2,py2))check(sceneColor===expectedPixel(px2,py2),"registered compositor priority/latency");
+        check(dr===expectedDR(px1,py1),"two-stage report alpha/request; panel-only, never HUD");
+        if(expectedDR(px1,py1))check(color===(expectedPixel(px1,py1)&9'h0FF),"actual supplied MIF/mask/font pixel aligned");
+        if(expectedDR(px2,py2))check(sceneColor===(expectedPixel(px2,py2)&9'h0FF),"registered compositor priority/latency");
         else check(sceneColor===baseColor,"HUD, exterior frame and other scene pixels unchanged");
-        check(display.results.background_rom.addressD<31104 && display.results.detail_rom.addressD<48448 &&
-              display.results.mask_rom.addressD<48448,"ROM addresses valid including blanking");
+        check(display.results.map_rom.addressD<62208 && display.results.payload_rom.addressD<69628,
+              "lossless map/payload ROM addresses valid including blanking");
         px2=px1;py2=py1;px1=nx;py1=ny;
     endtask
     task automatic keyEvent(input bit pressed);
@@ -120,9 +136,9 @@ module results_reports_tb;
         px1=1023;py1=1023;px2=1023;py2=1023;
     endtask
     initial begin
-        $readmemh("db/results_fixture/victory_static.hex",victory);
-        $readmemh("db/results_fixture/defeat_static.hex",defeat);
-        $readmemh("db/results_fixture/font.hex",font);
+        $readmemh("db/results_v3_fixture/victory_rgba.hex",victory);
+        $readmemh("db/results_v3_fixture/defeat_rgba.hex",defeat);
+        $readmemh("db/results_v3_fixture/font.hex",font);
         #12;resetN=1;repeat(5)@(negedge clk);
         // Frozen production MENU comparison, including native patch boundaries.
         for(y=0;y<480;y++)for(x=0;x<640;x++)begin
@@ -162,7 +178,7 @@ module results_reports_tb;
         // Every decimal digit at each field, plus irregular coordinates/transitions.
         for(j=0;j<10;j++)begin
             prepare(2,j*17,j*273,((j+3)%10)*273,((j+7)%10)*273);
-            for(y=171;y<365;y++)for(x=440;x<488;x++)scan(x,y);
+            for(y=230;y<386;y++)for(x=431;x<475;x++)scan(x,y);
             for(i=0;i<64;i++)scan((i*107)%700,(i*179)%520);
             scan(1023,1023);scan(1023,1023);
         end
@@ -170,7 +186,7 @@ module results_reports_tb;
         repeat(6)@(negedge clk);
         check(display.menuActive && display.results.resultState==0 && !display.results.statisticsReady,
               "hardware reset clears result snapshot and restores original opening");
-        $display("RESULTS_REPORTS_PASS:%0d checks; six full frames; native masks/2x base/font/DR/mux; dynamic values; fatal Cursed;92 victory;keypad5;unchanged HUD/opening",checks);
+        $display("RESULTS_V3_REPORTS_PASS:%0d checks; six full frames; native full-art lossless tiles/alpha/font/DR/mux; dynamic values; fatal Cursed;92 victory;keypad5;unchanged HUD/opening",checks);
         testPassed=1;$finish;
     end
     initial begin #40000000;$fatal(1,"results-report test timeout");end

@@ -1,0 +1,140 @@
+{
+  "archive_sha256": "074585eff987e4450e82a26a8398baec6a5b815369c094bd22d0f851065317fc",
+  "supplied_files_sha256": {
+    "manifest.json": "e52c4ac4bc0d22d781a6df06a9c467d20da54d06e99f1b97d962a686c83c91d3",
+    "README.md": "381e821df6b0c8a2621ecdc23e66a28e338a6eba8b1b60c8796745becb4f5a4c",
+    "previews/defeat_288x432_PANEL_FROM_MIFS_NO_DYNAMIC.png": "2541d843527374445d2ed8aafc93a08404ac3f86409e7299e1ddd597f0fd573a",
+    "previews/DEFEAT_VGA_640x480_FROM_MIFS_BLANK_VALUES.png": "d4acb076d9abebab483a25403553cf0d8b6910c9a9120a6a11c779d0fbb6eb0a",
+    "previews/DEFEAT_VGA_640x480_FROM_MIFS_SAMPLE_VALUES.png": "3bfd5e9a831bc947bdbc8b1d1f32bb2c356992214161c192bdc237968f7b5a61",
+    "previews/victory_288x432_PANEL_FROM_MIFS_NO_DYNAMIC.png": "ea7140ab26bd5207660c379645790aadceaad4f139f6ecf8d716d0e7fbf5966c",
+    "previews/VICTORY_VGA_640x480_FROM_MIFS_BLANK_VALUES.png": "8ecc6c381e776460bad3568b306b009a2aad205a2e2bebf3e791c4cd8d9d1076",
+    "previews/VICTORY_VGA_640x480_FROM_MIFS_SAMPLE_VALUES.png": "d1babd5604c6a57343b327159187d3a2c67fddb56f7e9f5c6f1575bdbd81b2da",
+    "reference_full_mifs/defeat_full_288x432_mask1.mif": "67f8ee60455b318c361e08989e281108c2d3ab01454d03f4e90baddc00aaed03",
+    "reference_full_mifs/defeat_full_288x432_rgb332.mif": "97a9fcf88ff39592800b6dad4b8b2c360d08efabe8b8c99a9976e29d1f56f381",
+    "reference_full_mifs/victory_full_288x432_mask1.mif": "ddebc8395420e472805532b85a971667eb4b2f65fc4bcf076eef7451dbdef205",
+    "reference_full_mifs/victory_full_288x432_rgb332.mif": "4cc14bfa7a04cb721ece700b454cbcb8a786ed2646dca01cb1bdcc6d6a861e9c",
+    "rom/defeat_upper_288x252_mask1.mif": "5c72dcaf313fbedf1a50de98038113e218f1217154cf04c815364a68a235d670",
+    "rom/defeat_upper_288x252_RECONSTRUCTED_FROM_MIF.png": "0cf7191050467357536d287d5f2330e18f783e922b6fb5b8551bb0de6cc07016",
+    "rom/defeat_upper_288x252_rgb332.mif": "7e1d33bb90f024936d2aad5bf54fda168671724963077f3c9f7d2c0c4866e01b",
+    "rom/defeat_upper_288x252_RGB332_RGBA.png": "0cf7191050467357536d287d5f2330e18f783e922b6fb5b8551bb0de6cc07016",
+    "rom/shared_lower_288x180_mask1.mif": "a536d84ee872a969b92f1f7dde4b6dba6b1795e481b81fb6c3b4a535a33b64cf",
+    "rom/shared_lower_288x180_RECONSTRUCTED_FROM_MIF.png": "e4e4125d8c5860d27eace008115102f3ad6c2ba7492d592f92fc671f0d935389",
+    "rom/shared_lower_288x180_rgb332.mif": "b27d71726c6c6db45c3b0c318ddeb7661fe9ff2bd868a456bd2304549fc245e5",
+    "rom/shared_lower_288x180_RGB332_RGBA.png": "e4e4125d8c5860d27eace008115102f3ad6c2ba7492d592f92fc671f0d935389",
+    "rom/victory_upper_288x252_mask1.mif": "6dc7746bc925039df44c0c9d79b19834c381a27ab5e31a95db9ea07483af3214",
+    "rom/victory_upper_288x252_RECONSTRUCTED_FROM_MIF.png": "fd277123d40510bd95314f1e2215e56a12d62fdab4856e12497b7947351541ec",
+    "rom/victory_upper_288x252_rgb332.mif": "a1aeedf49319ec7d71bbe24eff81a68490d003d99110c80c7fa30078fbcd006e",
+    "rom/victory_upper_288x252_RGB332_RGBA.png": "fd277123d40510bd95314f1e2215e56a12d62fdab4856e12497b7947351541ec",
+    "source/approved_originals/approved_defeat_original.png": "bb4f548fabc142649deb3daba5c3748c80f2cd463ba0dd8009e8300e175eaaea",
+    "source/approved_originals/approved_shared_template_original.png": "1bc7de1da8738ef9e115251299081713fad5f62d33bbc2f605c8584cd4057b7a",
+    "source/approved_originals/approved_victory_original.png": "b3d4aef2e621d536763b5f81a77647765fda6576a04bdb705e30965db63e226c",
+    "source/approved_vga_panels/defeat_full_288x432_RGB332_RGBA.png": "11372fb4806c4dcbedead435dbf884aed3465c8c964b601543ec4e8340be150c",
+    "source/approved_vga_panels/victory_full_288x432_RGB332_RGBA.png": "ea7140ab26bd5207660c379645790aadceaad4f139f6ecf8d716d0e7fbf5966c"
+  },
+  "panel_bounds": [
+    248,
+    24,
+    536,
+    456
+  ],
+  "tile_size": 2,
+  "unique_tiles": 17407,
+  "payload_words": 69628,
+  "map_words": 62208,
+  "proof": {
+    "victory": {
+      "rgb_mismatch_pixels": 0,
+      "alpha_mismatch_pixels": 0,
+      "rgba_words_sha256": "166677c062f12974fa1fe20d27e0979ee219244989797d6dffe8ff9c62c370a8",
+      "approved_png_rgba_equal": true
+    },
+    "defeat": {
+      "rgb_mismatch_pixels": 0,
+      "alpha_mismatch_pixels": 0,
+      "rgba_words_sha256": "f9f5e322823ff23b014011340d72bf8042eed861dc95d1f146da8d80fd3e8c81",
+      "approved_png_rgba_equal": true
+    }
+  },
+  "fields": {
+    "victory": [
+      [
+        438,
+        290,
+        3,
+        237
+      ],
+      [
+        437,
+        331,
+        3,
+        87
+      ],
+      [
+        437,
+        371,
+        3,
+        179
+      ]
+    ],
+    "defeat": [
+      [
+        443,
+        230,
+        2,
+        249
+      ],
+      [
+        431,
+        286,
+        3,
+        237
+      ],
+      [
+        431,
+        324,
+        3,
+        87
+      ],
+      [
+        431,
+        363,
+        3,
+        179
+      ]
+    ]
+  },
+  "font_x": [
+    0,
+    2,
+    3,
+    4,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    14,
+    15
+  ],
+  "font_y": [
+    6,
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    22,
+    23
+  ],
+  "full_references_exact": true,
+  "lossy_shared_lower_rejected": true,
+  "scene_unchanged_outside_alpha": true,
+  "hardware_tested": false
+}

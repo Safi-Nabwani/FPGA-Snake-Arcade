@@ -1,0 +1,127 @@
+{
+  "raw_two_panels_estimated_m10k": 244,
+  "alternatives": [
+    {
+      "tile_size": 1,
+      "unique_tiles": 197,
+      "payload_words": 197,
+      "map_words": 248832,
+      "map_bits": 8,
+      "estimated_m10k": 245
+    },
+    {
+      "tile_size": 2,
+      "unique_tiles": 17407,
+      "payload_words": 69628,
+      "map_words": 62208,
+      "map_bits": 15,
+      "estimated_m10k": 191
+    },
+    {
+      "tile_size": 4,
+      "unique_tiles": 11935,
+      "payload_words": 190960,
+      "map_words": 15552,
+      "map_bits": 14,
+      "estimated_m10k": 219
+    },
+    {
+      "tile_size": 8,
+      "unique_tiles": 3570,
+      "payload_words": 228480,
+      "map_words": 3888,
+      "map_bits": 12,
+      "estimated_m10k": 233
+    },
+    {
+      "tile_size": 16,
+      "unique_tiles": 959,
+      "payload_words": 245504,
+      "map_words": 972,
+      "map_bits": 10,
+      "estimated_m10k": 243
+    }
+  ],
+  "colors": {
+    "victory": 180,
+    "defeat": 184
+  },
+  "empty_wells": {
+    "victory": [
+      [
+        900,
+        [
+          186,
+          263,
+          231,
+          283
+        ]
+      ],
+      [
+        900,
+        [
+          185,
+          304,
+          230,
+          324
+        ]
+      ],
+      [
+        900,
+        [
+          185,
+          344,
+          230,
+          364
+        ]
+      ],
+      [
+        188,
+        [
+          140,
+          200,
+          234,
+          202
+        ]
+      ]
+    ],
+    "defeat": [
+      [
+        756,
+        [
+          180,
+          260,
+          222,
+          278
+        ]
+      ],
+      [
+        779,
+        [
+          181,
+          298,
+          222,
+          317
+        ]
+      ],
+      [
+        738,
+        [
+          181,
+          337,
+          222,
+          355
+        ]
+      ],
+      [
+        550,
+        [
+          195,
+          202,
+          220,
+          224
+        ]
+      ]
+    ]
+  }
+}

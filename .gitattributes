@@ -13,3 +13,5 @@ RTL/mifs/opening_screen_rgb332.mif -text
 RTL/mifs/opening_supplied_atlas.mif -text
 RTL/mifs/results/*.mif -text
 assets/jungle/shared_results_supplied/* -text
+RTL/mifs/results_v3/*.mif -text
+assets/jungle/results_v3_supplied/** -text
