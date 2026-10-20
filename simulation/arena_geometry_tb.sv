@@ -68,7 +68,7 @@ module arena_geometry_tb;
     bit inArena;
     initial begin
         #12; resetN = 1; #1;
-        check(hx == 384 && hy == 240 && length == 4, "new aligned snake start and original length");
+        check(hx == 384 && hy == 240 && length == 14, "aligned snake start and production initial length");
         check(gx == 7 && gy == 3 && bx == 5 && by == 10 && kx == 12 && ky == 6,
             "legacy seed grid positions preserved");
         for (i = 0; i < body.MAX_TRAIL; i = i + 1)
@@ -201,7 +201,7 @@ module arena_geometry_tb;
                   (head.targetY-24*64)%(24*64) == 0, "next fixed-point target alignment");
             check(body.trailX[0] >= 360 && body.trailX[0] <= 408 &&
                   body.trailY[0] >= 216 && body.trailY[0] <= 264, "body follows translated head");
-            check(length == 4, "original length unchanged");
+            check(length == 14, "production initial length preserved");
         end
         $display("PASS: head/body reset, 24x24 ROM addresses, four 24-pixel movement directions");
         $display("ARENA_GEOMETRY_PASS");

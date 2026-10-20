@@ -837,7 +837,7 @@ agreement for further details.
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
 		"INITIAL_LENGTH"
-		"4"
+		"14"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter

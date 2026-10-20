@@ -99,7 +99,7 @@ module opening_screen_tb;
             "full actual-MIF scene: existing HUD unchanged on left, supplied opening on right");
         check(!running && !startEvent && !endEvent && !redEvent && !blueEvent && !blackEvent,
             "all gameplay/collision/collection events disabled in MENU");
-        check(hx==384 && hy==240 && length==4 && speed==130,"no movement/length/speed changes during menu SOFs and held directions");
+        check(hx==384 && hy==240 && length==14 && speed==130,"no movement/length/speed changes during menu SOFs and held directions");
         check({sh,sl,hh,hl,ruby,sapphire,cursed}==0,"menu initial counters/score/high score");
         prevPrevX=prevX;prevPrevY=prevY;lastRGB=messageRGB;prevX=nx;prevY=ny;
     endtask
@@ -132,16 +132,16 @@ module opening_screen_tb;
         repeat(5)keyEvent(9'h073,1); // Typematic make events with no break.
         check(startCount==1,"held5 typematic makes do not retrigger start");
         for(i=0;i<8;i++)collect(1);
-        check({sh,sl}==8 && ruby==12'h008 && length==12 && speed==154,"Ruby unchanged score/length/speed");
+        check({sh,sl}==8 && ruby==12'h008 && length==22 && speed==154,"Ruby unchanged score/length/speed");
         collect(2);
-        check({sh,sl}==8'h11 && sapphire==1 && length==9 && speed==149,"Sapphire +3score/-3length/-5speed");
+        check({sh,sl}==8'h11 && sapphire==1 && length==19 && speed==149,"Sapphire +3score/-3length/-5speed");
         collect(3);
-        check({sh,sl}==6 && cursed==1 && length==14 && speed==159,"Cursed -5score/+5length/+10speed");
+        check({sh,sl}==6 && cursed==1 && length==24 && speed==159,"Cursed -5score/+5length/+10speed");
         wall=1;repeat(8)@(negedge clk);wall=0;
         check(!running && startCount==1 && {hh,hl}==6,"held5 cannot auto-restart defeat; high score captured");
         sharedResult();
         keyEvent(9'h073,0);keyEvent(9'h073,1);
-        check(running && startCount==2 && {sh,sl,ruby,sapphire,cursed}==0 && {hh,hl}==6 && length==4 && speed==130,
+        check(running && startCount==2 && {sh,sl,ruby,sapphire,cursed}==0 && {hh,hl}==6 && length==14 && speed==130,
             "fresh press restarts, clears per-game state, preserves high score and gameplay scene");
         for(i=0;i<90;i++)collect(1);
         repeat(6)@(negedge clk);

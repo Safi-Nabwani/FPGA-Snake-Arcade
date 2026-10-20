@@ -39,7 +39,7 @@ parameter int BODY_SIZE = 24;
 
 //Segments = body nodes
 parameter int MAX_SEGMENTS = 63;
-parameter int INITIAL_LENGTH = 4;
+parameter int INITIAL_LENGTH = 14;
 
 //in pixels between every two segments
 parameter int SEGMENT_SPACING = 6;
@@ -66,6 +66,13 @@ localparam int SELF_COLLISION_MARGIN = 6;
 
 logic [10:0] trailX [0:MAX_TRAIL-1];
 logic [10:0] trailY [0:MAX_TRAIL-1];
+
+// Reset/clear fills the trail with a visual seed, not actual movement history.
+// Start counting only once the head leaves the configured spawn, so waiting for
+// a direction key cannot mature stationary seed copies into self-collisions.
+// After movement begins every running frame counts, preserving six-frame spacing.
+localparam int TRAIL_COUNT_WIDTH = $clog2(MAX_TRAIL + 1);
+logic [TRAIL_COUNT_WIDTH-1:0] validTrailSamples;
 
 //------------- MIF ROM Signals -----------
 
@@ -119,6 +126,7 @@ begin
 	if (!resetN) begin
 
 		snakeLength <= INITIAL_LENGTH;
+		validTrailSamples <= '0;
 
 		for (int i = 0; i < MAX_TRAIL; i++) begin
 			trailX[i] <= INITIAL_X;
@@ -133,6 +141,7 @@ begin
 		if (clear) begin
 
 			snakeLength <= INITIAL_LENGTH;
+			validTrailSamples <= '0;
 
 			for (int i = 0; i < MAX_TRAIL; i++) begin
 				trailX[i] <= headX[10:0];
@@ -170,6 +179,10 @@ begin
 			//------------- Trail Update -------------
 
 			if (gameStarted && startOfFrame) begin
+				if ((validTrailSamples < MAX_TRAIL) &&
+					((validTrailSamples != 0) ||
+					 (headX != INITIAL_X) || (headY != INITIAL_Y)))
+					validTrailSamples <= validTrailSamples + 1'b1;
 	
 				//Save the latest
 				trailX[0] <= headX[10:0];
@@ -374,7 +387,7 @@ always_comb begin
 
 		trailIndex = (segmentIndex + 1) * SEGMENT_SPACING;
 
-		if (segmentIndex < snakeLength) begin
+		if ((segmentIndex < snakeLength) && (trailIndex < validTrailSamples)) begin
 
 			//The minimized hitbox computation
 			headLeft   = headX + SELF_COLLISION_MARGIN;
@@ -407,7 +420,7 @@ end
 
 //------------- Outputs -----------
 
-// Visual metadata only: trail, length and self-collision above are unchanged.
+// Preserve the established registered visual metadata / ROM pixel pipeline.
 logic bodyVisibleD;
 always_ff @(posedge clk or negedge resetN) begin
     if (!resetN) begin

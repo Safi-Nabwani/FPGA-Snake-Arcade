@@ -187,23 +187,34 @@ module snake_emerald_production_tb;
         // Original growth/shrink behavior is still active around the new renderer.
         @(negedge clk); clear = 1'b1; redPulse = 0; bluePulse = 0; blackPulse = 0;
         @(posedge clk); #1;
-        check(snakeLength == 6'd4, "new game restores the original length");
+        check(snakeLength == 6'd14, "new game restores fourteen body nodes");
         @(negedge clk); clear = 1'b0; redPulse = 1'b1;
         @(posedge clk); #1;
-        check(snakeLength == 6'd5, "Ruby grows by one");
+        check(snakeLength == 6'd15, "Ruby grows by one");
         @(negedge clk); redPulse = 1'b0; bluePulse = 1'b1;
         @(posedge clk); #1;
-        check(snakeLength == 6'd2, "Sapphire shrinks by three");
+        check(snakeLength == 6'd12, "Sapphire shrinks by three");
         @(negedge clk); bluePulse = 1'b0; blackPulse = 1'b1;
         @(posedge clk); #1;
-        check(snakeLength == 6'd7, "Cursed relic grows by five");
+        check(snakeLength == 6'd17, "Cursed relic grows by five");
         @(negedge clk); blackPulse = 1'b0; bluePulse = 1'b1;
         @(posedge clk); #1;
-        check(snakeLength == 6'd4, "second Sapphire shrink remains exact");
+        check(snakeLength == 6'd14, "second Sapphire shrink remains exact");
         @(negedge clk);
         @(posedge clk); #1;
+        check(snakeLength == 6'd11, "third Sapphire shrink remains exact");
+        repeat (4) begin
+            @(negedge clk);
+            @(posedge clk); #1;
+        end
         check(snakeLength == 6'd1, "shrink saturates at the one-segment minimum");
         @(negedge clk); bluePulse = 1'b0;
+
+        // A forced collision geometry must first refer to actual sampled history.
+        movingHeadX = 385;
+        startOfFrame = 1'b1;
+        repeat (31) begin @(posedge clk); #1; end
+        @(negedge clk); startOfFrame = 1'b0;
 
         // Self-collision remains geometric and independent of the visual alpha mask.
         force body.trailX[30] = movingHeadX[10:0];

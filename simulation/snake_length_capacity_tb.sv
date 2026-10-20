@@ -17,10 +17,13 @@ module snake_length_capacity_tb;
     wire [3:0] ones, tens;
     integer checks=0, frames=0, hitChecks=0, visibleChecks=0;
     integer expectedLength=4;
+    integer validSamples=0;
     integer pathPhase=0;
     bit testPassed=0;
 
-    snake_body #(.MAX_SEGMENTS(CAPACITY)) dut(
+    // Retain the established four-node reference scenario for capacity/equivalence.
+    // Production's fourteen-node startup is covered by snake_initial_length_tb.
+    snake_body #(.MAX_SEGMENTS(CAPACITY),.INITIAL_LENGTH(4)) dut(
         clk,resetN,clear,started,sof,px,py,hx,hy,red,blue,black,
         dr,rgb,length,hit);
     // Frozen pre-feature production RTL: independent linear selection and
@@ -37,15 +40,31 @@ module snake_length_capacity_tb;
     endtask
 
     task automatic cycle;
-        integer i;
+        integer i, nodeIndex, historyIndex;
+        bit expectedHit;
         begin
             @(posedge clk); #1;
             if(!resetN || clear) expectedLength=4;
             else if(black) expectedLength=(expectedLength+5>CAPACITY)?CAPACITY:expectedLength+5;
             else if(blue) expectedLength=(expectedLength<=3)?1:expectedLength-3;
             else if(red) expectedLength=(expectedLength==CAPACITY)?CAPACITY:expectedLength+1;
+            if(!resetN || clear) validSamples=0;
+            else if(started && sof && validSamples<HISTORY &&
+                    (validSamples!=0 || hx!=384 || hy!=240)) validSamples++;
+            expectedHit=0;
+            for(nodeIndex=4;nodeIndex<CAPACITY;nodeIndex++) begin
+                historyIndex=(nodeIndex+1)*6;
+                if(started && nodeIndex<expectedLength && historyIndex<validSamples &&
+                   hx+6<reference.trailX[historyIndex]+18 &&
+                   hx+18>reference.trailX[historyIndex]+6 &&
+                   hy+6<reference.trailY[historyIndex]+18 &&
+                   hy+18>reference.trailY[historyIndex]+6) expectedHit=1;
+            end
             check(length==expectedLength,"integer length oracle / saturation / event priority");
-            check(length===refLength && hit===refHit,"cycle-equivalent length and self collision");
+            check(length===refLength && hit===expectedHit,"reference length and independent valid-history collision oracle");
+            check(dut.validTrailSamples==validSamples,"history-valid count, reset, update and saturation");
+            if(validSamples==HISTORY)
+                check(hit===refHit,"fully sampled trail keeps exact legacy self collision");
             check(dr===refDR && rgb===refRGB,"cycle-equivalent Emerald RGB/alpha/latency");
             check(dut.insideBody===reference.insideBody &&
                   dut.address===reference.address &&
@@ -122,6 +141,11 @@ module snake_length_capacity_tb;
             cycle(); sof=0; red=0;blue=0;black=0;
             cycle();
         end
+        // The old suite's positive self-hit count came from reset-seeded overlap.
+        // Exercise an actual mature sample explicitly instead of relying on it.
+        check(validSamples==HISTORY && length>4,"mature trail ready for real self contact");
+        hx=reference.trailX[30];hy=reference.trailY[30];cycle();
+        check(hit,"mature node-four geometry still collides");
         // All visible coordinates and all same-pixel pipeline transitions.
         for(y=0;y<480;y++) for(x=0;x<640;x++) begin px=x;py=y;cycle();end
         cycle();cycle();
