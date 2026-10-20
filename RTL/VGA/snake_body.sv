@@ -72,29 +72,28 @@ logic [10:0] trailY [0:MAX_TRAIL-1];
 logic insideBody;
 
 logic [9:0] address;
-logic [7:0] color;
+logic [12:0] atlasAddress;
+logic [8:0] spriteWord;
+logic [3:0] spriteIndex;
+logic [5:0] selectedSegment;
+logic [10:0] selectedCurrentX, selectedCurrentY;
+logic [10:0] selectedTowardHeadX, selectedTowardHeadY;
+logic [10:0] selectedTowardTailX, selectedTowardTailY;
 
 //------------- Self Collision Signals -----------
 
 logic selfCollisionHit;
 
-//------------- Body MIF ROM -----------
+//------------- Emerald Body MIF ROM -----------
 
 lpm_rom #(
-	.LPM_WIDTH              (8),
-	.LPM_WIDTHAD            (10),
-	.LPM_NUMWORDS           (576),
-	.LPM_FILE               ("RTL/mifs/snake_body_24.mif"),
-	.LPM_TYPE               ("LPM_ROM"),
-	.LPM_ADDRESS_CONTROL    ("REGISTERED"),
-	.LPM_OUTDATA            ("UNREGISTERED"),
-	.AUTO_CARRY_CHAINS      ("ON"),
-	.AUTO_CASCADE_BUFFERS   ("ON"),
-	.INTENDED_DEVICE_FAMILY ("Cyclone V")
+	.LPM_WIDTH(9), .LPM_WIDTHAD(13), .LPM_NUMWORDS(8064),
+	.LPM_FILE("RTL/mifs/snake_variants/01_emerald_rgba9.mif"), .LPM_TYPE("LPM_ROM"),
+	.LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
+	.AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
+	.INTENDED_DEVICE_FAMILY("Cyclone V")
 ) rom_inst (
-	.address (address),
-	.inclock (clk),
-	.q       (color)
+	.address(atlasAddress), .inclock(clk), .q(spriteWord)
 );
 
 //------------- Trail / Length Logic -----------
@@ -182,12 +181,103 @@ begin
 	end
 end
 
+//------------- Visual Sprite Selection -----------
+
+localparam logic [2:0] SIDE_NONE  = 3'd0;
+localparam logic [2:0] SIDE_UP    = 3'd1;
+localparam logic [2:0] SIDE_RIGHT = 3'd2;
+localparam logic [2:0] SIDE_DOWN  = 3'd3;
+localparam logic [2:0] SIDE_LEFT  = 3'd4;
+
+function automatic logic [2:0] sideBetween(
+	input integer originX,
+	input integer originY,
+	input integer otherX,
+	input integer otherY
+);
+	integer deltaX;
+	integer deltaY;
+	begin
+		deltaX = otherX - originX;
+		deltaY = otherY - originY;
+		if ((deltaX == 0) && (deltaY == 0))
+			sideBetween = SIDE_NONE;
+		else if ((deltaX >= deltaY) && (deltaX >= -deltaY))
+			sideBetween = SIDE_RIGHT;
+		else if ((-deltaX >= deltaY) && (-deltaX >= -deltaY))
+			sideBetween = SIDE_LEFT;
+		else if (deltaY < 0)
+			sideBetween = SIDE_UP;
+		else
+			sideBetween = SIDE_DOWN;
+	end
+endfunction
+
+function automatic logic [3:0] chooseSprite(
+	input logic isTail,
+	input integer currentX,
+	input integer currentY,
+	input integer towardHeadX,
+	input integer towardHeadY,
+	input integer towardTailX,
+	input integer towardTailY
+);
+	logic [2:0] headSide;
+	logic [2:0] tailSide;
+	logic connectsUp;
+	logic connectsRight;
+	logic connectsDown;
+	logic connectsLeft;
+	begin
+		headSide = sideBetween(currentX, currentY, towardHeadX, towardHeadY);
+		tailSide = sideBetween(currentX, currentY, towardTailX, towardTailY);
+
+		if (isTail) begin
+			// Tail name is the direction of its pointed tip, away from the body.
+			case (headSide)
+				SIDE_UP:    chooseSprite = 4'd12; // tail_down
+				SIDE_RIGHT: chooseSprite = 4'd13; // tail_left
+				SIDE_DOWN:  chooseSprite = 4'd10; // tail_up
+				SIDE_LEFT:  chooseSprite = 4'd11; // tail_right
+				default:    chooseSprite = 4'd10;
+			endcase
+		end
+		else begin
+			connectsUp = (headSide == SIDE_UP) || (tailSide == SIDE_UP);
+			connectsRight = (headSide == SIDE_RIGHT) || (tailSide == SIDE_RIGHT);
+			connectsDown = (headSide == SIDE_DOWN) || (tailSide == SIDE_DOWN);
+			connectsLeft = (headSide == SIDE_LEFT) || (tailSide == SIDE_LEFT);
+
+			if (connectsUp && connectsLeft)
+				chooseSprite = 4'd6;  // corner_top_left
+			else if (connectsUp && connectsRight)
+				chooseSprite = 4'd7;  // corner_top_right
+			else if (connectsDown && connectsLeft)
+				chooseSprite = 4'd8;  // corner_bottom_left
+			else if (connectsDown && connectsRight)
+				chooseSprite = 4'd9;  // corner_bottom_right
+			else if (connectsLeft || connectsRight)
+				chooseSprite = 4'd5;  // body_horizontal
+			else
+				chooseSprite = 4'd4;  // body_vertical / stationary fallback
+		end
+	end
+endfunction
+
 //------------- Body Area / ROM Address Logic -----------
 
 always_comb begin
 
 	insideBody = 1'b0;
 	address = 10'd0;
+	selectedSegment = 6'd0;
+	selectedCurrentX = 11'd0;
+	selectedCurrentY = 11'd0;
+	selectedTowardHeadX = 11'd0;
+	selectedTowardHeadY = 11'd0;
+	selectedTowardTailX = 11'd0;
+	selectedTowardTailY = 11'd0;
+	spriteIndex = 4'd4;
 
 	for (int segmentIndex = 0; segmentIndex < MAX_SEGMENTS; segmentIndex++) begin
 
@@ -209,6 +299,20 @@ always_comb begin
 			) begin
 
 				insideBody = 1'b1;
+				selectedSegment = segmentIndex[5:0];
+				selectedCurrentX = trailX[trailIndex];
+				selectedCurrentY = trailY[trailIndex];
+				selectedTowardHeadX = trailX[trailIndex - SEGMENT_SPACING];
+				selectedTowardHeadY = trailY[trailIndex - SEGMENT_SPACING];
+				// Default is always in range and is ignored for an actual tail.
+				selectedTowardTailX = trailX[trailIndex - SEGMENT_SPACING];
+				selectedTowardTailY = trailY[trailIndex - SEGMENT_SPACING];
+				if (segmentIndex < (MAX_SEGMENTS - 1)) begin
+					if (segmentIndex != (snakeLength - 1'b1)) begin
+						selectedTowardTailX = trailX[trailIndex + SEGMENT_SPACING];
+						selectedTowardTailY = trailY[trailIndex + SEGMENT_SPACING];
+					end
+				end
 
 				address =
 					((pixelY - trailY[trailIndex]) * BODY_SIZE) +
@@ -219,6 +323,20 @@ always_comb begin
 		end
 
 	end
+
+	if (insideBody) begin
+		spriteIndex = chooseSprite(
+			selectedSegment == (snakeLength - 1'b1),
+			selectedCurrentX,
+			selectedCurrentY,
+			selectedTowardHeadX,
+			selectedTowardHeadY,
+			selectedTowardTailX,
+			selectedTowardTailY
+		);
+	end
+
+	atlasAddress = (spriteIndex * 13'd576) + address;
 
 end
 
@@ -289,8 +407,8 @@ always_ff @(posedge clk or negedge resetN) begin
         snakeBody_RGB <= TRANSPARENT_ENCODING;
     end else begin
         bodyVisibleD <= gameStarted && insideBody;
-        snakeBody_DR <= bodyVisibleD && color != TRANSPARENT_ENCODING;
-        snakeBody_RGB <= bodyVisibleD ? color : TRANSPARENT_ENCODING;
+        snakeBody_DR <= bodyVisibleD && spriteWord[8];
+        snakeBody_RGB <= bodyVisibleD ? spriteWord[7:0] : TRANSPARENT_ENCODING;
     end
 end
 
