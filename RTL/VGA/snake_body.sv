@@ -38,14 +38,14 @@ parameter int INITIAL_Y = 240;
 parameter int BODY_SIZE = 24;
 
 //Segments = body nodes
-parameter int MAX_SEGMENTS = 32;
+parameter int MAX_SEGMENTS = 63;
 parameter int INITIAL_LENGTH = 4;
 
 //in pixels between every two segments
 parameter int SEGMENT_SPACING = 6;
 
 //We save the movement of the Head by saving a trail of head positionXY
-//Later we want to use indices starting from zero up to 192 -> overall 193, so we add the plus one
+// One entry per history frame, including the current sample at index zero.
 localparam int MAX_TRAIL = (MAX_SEGMENTS * SEGMENT_SPACING) + 1;
 
 localparam logic [7:0] TRANSPARENT_ENCODING = 8'hFF;
@@ -75,7 +75,8 @@ logic [9:0] address;
 logic [12:0] atlasAddress;
 logic [8:0] spriteWord;
 logic [3:0] spriteIndex;
-logic [5:0] selectedSegment;
+localparam int SELECT_INDEX_WIDTH = (MAX_SEGMENTS > 1) ? $clog2(MAX_SEGMENTS) : 1;
+logic [SELECT_INDEX_WIDTH-1:0] selectedSegment;
 logic [10:0] selectedCurrentX, selectedCurrentY;
 logic [10:0] selectedTowardHeadX, selectedTowardHeadY;
 logic [10:0] selectedTowardTailX, selectedTowardTailY;
@@ -97,6 +98,20 @@ lpm_rom #(
 );
 
 //------------- Trail / Length Logic -----------
+
+// Widen before addition: at the six-bit cap, 63 + 5 must be 68, not 4.
+localparam int LENGTH_WIDTH = $bits(snakeLength);
+function automatic logic [LENGTH_WIDTH-1:0] saturatingGrow(
+    input logic [LENGTH_WIDTH-1:0] currentLength,
+    input logic [LENGTH_WIDTH-1:0] amount
+);
+    logic [LENGTH_WIDTH:0] sum;
+    begin
+        sum = {1'b0, currentLength} + {1'b0, amount};
+        saturatingGrow = (sum >= MAX_SEGMENTS) ?
+            LENGTH_WIDTH'(MAX_SEGMENTS) : sum[LENGTH_WIDTH-1:0];
+    end
+endfunction
 
 always_ff @(posedge clk or negedge resetN)
 begin
@@ -132,11 +147,7 @@ begin
 
 			if (blackAppleHitPulse) begin
 
-				//To avoid passing the max
-				if (snakeLength + BLACK_GROW_VALUE >= MAX_SEGMENTS)
-					snakeLength <= MAX_SEGMENTS;
-				else
-					snakeLength <= snakeLength + BLACK_GROW_VALUE;
+				snakeLength <= saturatingGrow(snakeLength, BLACK_GROW_VALUE);
 
 			end
 
@@ -152,11 +163,7 @@ begin
 
 			else if (redAppleHitPulse) begin
 
-				//To avoid passing the max
-				if (snakeLength + RED_GROW_VALUE >= MAX_SEGMENTS)
-					snakeLength <= MAX_SEGMENTS;
-				else
-					snakeLength <= snakeLength + RED_GROW_VALUE;
+				snakeLength <= saturatingGrow(snakeLength, RED_GROW_VALUE);
 
 			end
 
@@ -266,78 +273,80 @@ endfunction
 
 //------------- Body Area / ROM Address Logic -----------
 
+// Independent leaf tests and a balanced left-first tree retain the original
+// lowest-index bounding-rectangle ownership, even for transparent sprite pixels.
+// No pipeline registers are inserted.
+localparam int SELECT_LEAVES = 1 << SELECT_INDEX_WIDTH;
+localparam int SELECT_PAYLOAD_WIDTH = SELECT_INDEX_WIDTH + (6 * 11) + 10;
+wire selectValid [1:2*SELECT_LEAVES-1];
+wire [SELECT_PAYLOAD_WIDTH-1:0] selectPayload [1:2*SELECT_LEAVES-1];
+genvar node, branch;
+
+generate
+    for (node = 0; node < SELECT_LEAVES; node = node + 1) begin : selection_leaf
+        if (node < MAX_SEGMENTS) begin : body_node
+            localparam int HISTORY_INDEX = (node + 1) * SEGMENT_SPACING;
+            localparam logic [SELECT_INDEX_WIDTH-1:0] NODE_INDEX = SELECT_INDEX_WIDTH'(node);
+            wire [10:0] tailX, tailY;
+            wire [9:0] localAddress;
+            if (node < MAX_SEGMENTS-1) begin : has_older_neighbor
+                assign tailX = (node == snakeLength-1'b1) ?
+                    trailX[HISTORY_INDEX-SEGMENT_SPACING] :
+                    trailX[HISTORY_INDEX+SEGMENT_SPACING];
+                assign tailY = (node == snakeLength-1'b1) ?
+                    trailY[HISTORY_INDEX-SEGMENT_SPACING] :
+                    trailY[HISTORY_INDEX+SEGMENT_SPACING];
+            end
+            else begin : last_node
+                assign tailX = trailX[HISTORY_INDEX-SEGMENT_SPACING];
+                assign tailY = trailY[HISTORY_INDEX-SEGMENT_SPACING];
+            end
+            assign localAddress =
+                ((pixelY-trailY[HISTORY_INDEX])*BODY_SIZE) +
+                (pixelX-trailX[HISTORY_INDEX]);
+            assign selectValid[SELECT_LEAVES+node] =
+                (node < snakeLength) &&
+                (pixelX >= trailX[HISTORY_INDEX]) &&
+                (pixelX < trailX[HISTORY_INDEX]+BODY_SIZE) &&
+                (pixelY >= trailY[HISTORY_INDEX]) &&
+                (pixelY < trailY[HISTORY_INDEX]+BODY_SIZE);
+            assign selectPayload[SELECT_LEAVES+node] = {
+                NODE_INDEX,
+                trailX[HISTORY_INDEX], trailY[HISTORY_INDEX],
+                trailX[HISTORY_INDEX-SEGMENT_SPACING],
+                trailY[HISTORY_INDEX-SEGMENT_SPACING],
+                tailX, tailY, localAddress
+            };
+        end
+        else begin : unused_node
+            assign selectValid[SELECT_LEAVES+node] = 1'b0;
+            assign selectPayload[SELECT_LEAVES+node] = '0;
+        end
+    end
+    for (branch = 1; branch < SELECT_LEAVES; branch = branch + 1) begin : selection_branch
+        assign selectValid[branch] =
+            selectValid[branch*2] || selectValid[branch*2+1];
+        assign selectPayload[branch] = selectValid[branch*2] ?
+            selectPayload[branch*2] : selectPayload[branch*2+1];
+    end
+endgenerate
+
 always_comb begin
-
-	insideBody = 1'b0;
-	address = 10'd0;
-	selectedSegment = 6'd0;
-	selectedCurrentX = 11'd0;
-	selectedCurrentY = 11'd0;
-	selectedTowardHeadX = 11'd0;
-	selectedTowardHeadY = 11'd0;
-	selectedTowardTailX = 11'd0;
-	selectedTowardTailY = 11'd0;
-	spriteIndex = 4'd4;
-
-	for (int segmentIndex = 0; segmentIndex < MAX_SEGMENTS; segmentIndex++) begin
-
-		int trailIndex;
-		
-		// We skip the spacing indices in the trail t achieve visible movement 
-		trailIndex = (segmentIndex + 1) * SEGMENT_SPACING;
-		
-		//if insideBody = 1, then we already scanned the body segment for this pixel
-		//To avoid the overlapping of segments
-		if (!insideBody && (segmentIndex < snakeLength)) begin
-
-			//InsideSqure kind of check
-			if (
-				(pixelX >= trailX[trailIndex]) &&
-				(pixelX <  trailX[trailIndex] + BODY_SIZE) &&
-				(pixelY >= trailY[trailIndex]) &&
-				(pixelY <  trailY[trailIndex] + BODY_SIZE)
-			) begin
-
-				insideBody = 1'b1;
-				selectedSegment = segmentIndex[5:0];
-				selectedCurrentX = trailX[trailIndex];
-				selectedCurrentY = trailY[trailIndex];
-				selectedTowardHeadX = trailX[trailIndex - SEGMENT_SPACING];
-				selectedTowardHeadY = trailY[trailIndex - SEGMENT_SPACING];
-				// Default is always in range and is ignored for an actual tail.
-				selectedTowardTailX = trailX[trailIndex - SEGMENT_SPACING];
-				selectedTowardTailY = trailY[trailIndex - SEGMENT_SPACING];
-				if (segmentIndex < (MAX_SEGMENTS - 1)) begin
-					if (segmentIndex != (snakeLength - 1'b1)) begin
-						selectedTowardTailX = trailX[trailIndex + SEGMENT_SPACING];
-						selectedTowardTailY = trailY[trailIndex + SEGMENT_SPACING];
-					end
-				end
-
-				address =
-					((pixelY - trailY[trailIndex]) * BODY_SIZE) +
-					(pixelX - trailX[trailIndex]);
-
-			end
-
-		end
-
-	end
-
-	if (insideBody) begin
-		spriteIndex = chooseSprite(
-			selectedSegment == (snakeLength - 1'b1),
-			selectedCurrentX,
-			selectedCurrentY,
-			selectedTowardHeadX,
-			selectedTowardHeadY,
-			selectedTowardTailX,
-			selectedTowardTailY
-		);
-	end
-
-	atlasAddress = (spriteIndex * 13'd576) + address;
-
+    insideBody = selectValid[1];
+    {selectedSegment, selectedCurrentX, selectedCurrentY,
+     selectedTowardHeadX, selectedTowardHeadY,
+     selectedTowardTailX, selectedTowardTailY, address} =
+        insideBody ? selectPayload[1] : '0;
+    spriteIndex = 4'd4;
+    if (insideBody) begin
+        spriteIndex = chooseSprite(
+            selectedSegment == (snakeLength - 1'b1),
+            selectedCurrentX, selectedCurrentY,
+            selectedTowardHeadX, selectedTowardHeadY,
+            selectedTowardTailX, selectedTowardTailY
+        );
+    end
+    atlasAddress = (spriteIndex * 13'd576) + address;
 end
 
 //------------- Self Collision Logic -----------

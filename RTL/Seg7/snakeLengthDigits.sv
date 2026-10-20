@@ -18,7 +18,19 @@ always_comb begin
 	tensDigit = 4'd0;
 	onesDigit = 4'd0;
 
-	if (snakeLength >= 6'd30) begin
+	if (snakeLength >= 6'd60) begin
+		tensDigit = 4'd6;
+		onesDigit = 4'(snakeLength - 6'd60);
+	end
+	else if (snakeLength >= 6'd50) begin
+		tensDigit = 4'd5;
+		onesDigit = 4'(snakeLength - 6'd50);
+	end
+	else if (snakeLength >= 6'd40) begin
+		tensDigit = 4'd4;
+		onesDigit = 4'(snakeLength - 6'd40);
+	end
+	else if (snakeLength >= 6'd30) begin
 		tensDigit = 4'd3;
 		onesDigit = snakeLength - 6'd30;
 	end

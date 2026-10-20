@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 
 module snake_emerald_production_tb;
+    localparam integer MAX_NODES = 63;
     localparam integer VARIANT = 1;
     localparam integer LOCAL_X = 7;
     localparam integer LOCAL_Y = 11;
@@ -25,6 +26,7 @@ module snake_emerald_production_tb;
     wire [5:0] snakeLength;
 
     integer checks = 0;
+    bit testPassed = 0;
 
     jungle_head_draw head (
         clk, resetN, headPixelX, headPixelY, headTopLeftX, headTopLeftY,
@@ -154,18 +156,18 @@ module snake_emerald_production_tb;
         checkTail(400, 294, 12); // body above -> tail points down
         checkTail(406, 300, 13); // body right -> tail points left
 
-        // Exercise the highest legal trail index without indexing beyond 192.
-        force body.snakeLength = 6'd32;
-        force body.trailX[186] = 11'd600;
-        force body.trailY[186] = 11'd294;
-        force body.trailX[192] = 11'd600;
-        force body.trailY[192] = 11'd300;
+        // Exercise the production maximum, including history index 378.
+        force body.snakeLength = MAX_NODES;
+        force body.trailX[(MAX_NODES-1)*6] = 11'd600;
+        force body.trailY[(MAX_NODES-1)*6] = 11'd294;
+        force body.trailX[MAX_NODES*6] = 11'd600;
+        force body.trailY[MAX_NODES*6] = 11'd300;
         @(negedge clk);
         bodyPixelX = 600 + LOCAL_X;
         bodyPixelY = 300 + 20; // below the overlapping segment 30 rectangle
         #1;
-        check(body.insideBody && body.selectedSegment == 31,
-              "maximum-length tail uses legal trail index 192");
+        check(body.insideBody && body.selectedSegment == MAX_NODES-1,
+              "maximum-length tail uses legal trail index 378");
         check(body.spriteIndex == 12,
               "maximum-length tail selection is in range");
 
@@ -176,10 +178,10 @@ module snake_emerald_production_tb;
         release body.trailY[6];
         release body.trailX[12];
         release body.trailY[12];
-        release body.trailX[186];
-        release body.trailY[186];
-        release body.trailX[192];
-        release body.trailY[192];
+        release body.trailX[(MAX_NODES-1)*6];
+        release body.trailY[(MAX_NODES-1)*6];
+        release body.trailX[MAX_NODES*6];
+        release body.trailY[MAX_NODES*6];
         release body.snakeLength;
 
         // Original growth/shrink behavior is still active around the new renderer.
@@ -223,6 +225,7 @@ module snake_emerald_production_tb;
         check(!headDR && !bodyDR, "no rendering occurs outside snake cells");
 
         $display("SNAKE_EMERALD_PRODUCTION_PASS checks=%0d", checks);
+        testPassed = 1;
         $finish;
     end
 
