@@ -87,7 +87,7 @@ module melody_player_1
 		if ( !resetN ) begin // Asynchronic reset, initialize the state machine 
 			SM_Maestro <= s_idle;
 			noteIndex <= 8'b0 ;
-			noteTimeCounter  <= noteDuration ;
+			noteTimeCounter  <= 5'd0 ;
 			EnableSoundOut <= 1'b0 ;
 			melodyEnded <= 1'b0 ;
 		end // asynch
