@@ -326,3 +326,7 @@ set_global_assignment -name BDF_FILE RTL/AUDIO/Audio_Block.bdf
 set_global_assignment -name VECTOR_WAVEFORM_FILE snake_border_collision.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE redApple_eat.vwf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+
+# Internal graphics debug outputs must never drive auto-selected board pins.
+set_instance_assignment -name VIRTUAL_PIN ON -to "BG_RGB[*]"
+set_instance_assignment -name VIRTUAL_PIN ON -to borderDR
