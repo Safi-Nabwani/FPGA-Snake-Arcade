@@ -17,7 +17,7 @@ module sound_effect_controller (
 //------------- Outputs -----------
 
 	output logic startMelody,			// Enable
-	output logic [3:0] melodySelect	// Selector
+	output logic [3:0] melodySelect	// Request ID; player latches accepted bank
 
 );
 
@@ -30,13 +30,15 @@ module sound_effect_controller (
 // 3 = black apple / bad apple sound
 // 4 = movement / restart sound
 // 5 = red apple hit sound
+// 6 = explicit game start/restart request, mapped by player to song bank 4.
+// Distinguishes restart from a direction key without changing the BDF interface.
 
 localparam logic [3:0] WIN_SOUND         = 4'd0;
 localparam logic [3:0] GAME_OVER_SOUND   = 4'd1;
 localparam logic [3:0] BLUE_APPLE_SOUND  = 4'd2;
 localparam logic [3:0] BLACK_APPLE_SOUND = 4'd3;
 localparam logic [3:0] MOVE_SOUND        = 4'd4;
-localparam logic [3:0] RESTART_SOUND     = 4'd4;
+localparam logic [3:0] RESTART_SOUND     = 4'd6;
 localparam logic [3:0] RED_APPLE_SOUND   = 4'd5;
 
 //------------- Sound Trigger Logic -----------

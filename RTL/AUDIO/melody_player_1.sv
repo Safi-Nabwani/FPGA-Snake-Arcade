@@ -26,7 +26,7 @@ module melody_player_1
  input logic resetN,
  input logic CLOCK_31p5,
  input logic startMelody,
- input logic [3:0] melodySelect, // selector of one melody  
+ input logic [3:0] melodySelect, // request ID: banks 0..5, explicit restart 6
 // input logic [15:0] songs_mem,		// input from songs.mif
  
  output logic [3:0] tone,
@@ -41,7 +41,28 @@ module melody_player_1
 //`include "songs.sv"
 
  // Maestro state machine declaration 
- enum logic [1:0] {s_idle, s_playNote, s_gap, s_ended} SM_Maestro; // state machine
+ enum logic [2:0] {s_idle, s_fetchWait, s_loadNote, s_playNote, s_gap, s_ended} SM_Maestro;
+ logic [3:0] activeBank;
+ logic [2:0] activePriority;
+ logic [15:0] noteWord;
+
+ // Victory > Defeat > Cursed > Sapphire > Ruby > restart > direction.
+ // Restart is an explicit sequence cancellation, even during terminal audio.
+ function automatic logic [2:0] requestPriority(input logic [3:0] requestID);
+     case (requestID)
+         4'd0: requestPriority = 3'd7;
+         4'd1: requestPriority = 3'd6;
+         4'd3: requestPriority = 3'd5;
+         4'd2: requestPriority = 3'd4;
+         4'd5: requestPriority = 3'd3;
+         4'd6: requestPriority = 3'd2;
+         4'd4: requestPriority = 3'd1;
+         default: requestPriority = 3'd0;
+     endcase
+ endfunction
+ wire acceptRequest = startMelody && (requestPriority(melodySelect) != 0) &&
+     ((melodySelect == 4'd6) || (SM_Maestro == s_idle) ||
+      (SM_Maestro == s_ended) || (requestPriority(melodySelect) > activePriority));
 
 	// parameters declarations
 	logic [11:0] note_address;
@@ -88,78 +109,91 @@ module melody_player_1
 			SM_Maestro <= s_idle;
 			noteIndex <= 8'b0 ;
 			noteTimeCounter  <= 5'd0 ;
+			activeBank <= 4'd4;
+			activePriority <= 3'd0;
+			noteWord <= 16'd0;
 			EnableSoundOut <= 1'b0 ;
 			melodyEnded <= 1'b0 ;
 		end // asynch
-		else begin 	// Synchronic logic of the state machine; once every clock 
-//--------------------------------------------------------------------------------------------------------------------
-			// state machine 
-			// default outputs 
-			EnableSoundOut <= 1'b0 ;
-			melodyEnded <= 1'b0 ;
-		
-			case ( SM_Maestro )			
-				// ================================================				
-				s_idle: begin
-					noteIndex <= 8'b0;
-				   if (startMelody) begin   // start melody pressed 
-						noteTimeCounter <= noteDuration ;// preset noteTimecounter
-	               SM_Maestro <= s_playNote ;	
-					end // if
-				end // s_idle	
-				// ================================================				
-				s_playNote: begin	
-					EnableSoundOut <= 1'b1 ; // enable sound 
-					if ((noteDuration != 4'b0)) begin   // if song is still playing 
-						if ( hundredthSecPulse ) begin
-							noteTimeCounter <= noteTimeCounter - 5'b1; // decremnt counter
-						end
-						if (noteTimeCounter == 5'b0) begin // timer finished  
-							noteIndex <= noteIndex + 1'b1 ;   // increment note Index 
-							SM_Maestro <= s_gap ;   // next state 
-							noteTimeCounter <= gapDuration ;// preset counter for gap between notes 
-						end // if timer ended
-					end // if not end of song	  
-					else begin
-						// reached end of song
-						SM_Maestro <= s_ended;
-					end
-				end // s_playNote
-				// ================================================				
-				s_gap : begin	
-					if ( hundredthSecPulse ) begin
-						noteTimeCounter <= noteTimeCounter - 5'b1; // decremnt counter  
-					end
-					if (noteTimeCounter == 5'b0) begin // timer finished 
-						SM_Maestro <= s_playNote ;   // back to playnote state    
-				      noteTimeCounter <= noteDuration ;     // preset counter 
-					end // if 
-				end // s_gap
-				// ================================================				
-            s_ended : begin
-					melodyEnded <= 1'b1 ;   
-               SM_Maestro <= s_idle ;  
-				end //s_end
-				//	================================================				
-            default: begin
-					SM_Maestro <= s_idle ;
-				end // default
-			endcase
+		else begin
+            melodyEnded <= 1'b0;
+            if (acceptRequest) begin
+                activeBank <= (melodySelect == 4'd6) ? 4'd4 : melodySelect;
+                activePriority <= requestPriority(melodySelect);
+                noteIndex <= 8'd0;
+                noteTimeCounter <= 5'd0;
+                EnableSoundOut <= 1'b0;
+                SM_Maestro <= s_fetchWait;
+            end else begin
+                case (SM_Maestro)
+                    s_idle: begin
+                        EnableSoundOut <= 1'b0;
+                        activePriority <= 3'd0;
+                    end
+                    // Address changes on acceptance/index advance. At this edge
+                    // the ROM registers that address; use its word NEXT edge.
+                    s_fetchWait: SM_Maestro <= s_loadNote;
+                    s_loadNote: begin
+                        if (noteDuration == 5'd0) begin
+                            EnableSoundOut <= 1'b0;
+                            noteTimeCounter <= 5'd0;
+                            activePriority <= 3'd0;
+                            melodyEnded <= 1'b1;
+                            SM_Maestro <= s_ended;
+                        end else begin
+                            noteWord <= songs_mem;
+                            noteTimeCounter <= noteDuration;
+                            EnableSoundOut <= 1'b1;
+                            SM_Maestro <= s_playNote;
+                        end
+                    end
+                    s_playNote: if (hundredthSecPulse) begin
+                        if (noteTimeCounter > 5'd1)
+                            noteTimeCounter <= noteTimeCounter - 5'd1;
+                        else begin
+                            EnableSoundOut <= 1'b0;
+                            noteTimeCounter <= gapDuration;
+                            if (gapDuration != 5'd0)
+                                SM_Maestro <= s_gap;
+                            else begin
+                                noteIndex <= noteIndex + 8'd1;
+                                SM_Maestro <= s_fetchWait;
+                            end
+                        end
+                    end
+                    s_gap: if (hundredthSecPulse) begin
+                        if (noteTimeCounter > 5'd1)
+                            noteTimeCounter <= noteTimeCounter - 5'd1;
+                        else begin
+                            noteTimeCounter <= 5'd0;
+                            noteIndex <= noteIndex + 8'd1;
+                            SM_Maestro <= s_fetchWait;
+                        end
+                    end
+                    s_ended: SM_Maestro <= s_idle;
+                    default: begin
+                        SM_Maestro <= s_idle;
+                        EnableSoundOut <= 1'b0;
+                        noteTimeCounter <= 5'd0;
+                        activePriority <= 3'd0;
+                    end
+                endcase
+            end
 		end // if reset else
 	end // always_ff state machine 
 
 	//assign song_index  = base_offset + noteIndex;
 	//assign note_address[11:8] = melodySelect;
 	//assign note_address[7:0] = noteIndex;
-	assign note_address = {{melodySelect},{noteIndex}};
+	assign note_address = {activeBank,noteIndex};
 //	assign tone        	= all_songs[song_index].note;
 //	assign octave      	= all_songs[song_index].octave;
 //	assign noteDuration  = all_songs[song_index].duration;	// in units of ? msec
 //	assign gapDuration  	= all_songs[song_index].gap;		   // in units of ? msec
 
-	assign tone        	= songs_mem[15:12];  
-	assign octave   		= {{1'b0},{songs_mem[11:10]}} + 3'd3; 
+	assign tone        	= noteWord[15:12];
+	assign octave   		= {{1'b0},{noteWord[11:10]}} + 3'd3;
 	assign noteDuration  = songs_mem[9:5];
-	assign gapDuration  	= songs_mem[4:0];
+	assign gapDuration  	= noteWord[4:0];
 endmodule
 
