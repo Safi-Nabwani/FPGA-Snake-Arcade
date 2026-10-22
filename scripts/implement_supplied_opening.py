@@ -49,6 +49,8 @@ def encode(image):
 
 
 def write_mif(path,depth,data):
+    if path.name=='opening_supplied_atlas.mif' and (ROOT/'assets/jungle/approved_opening/manifest.json').exists():
+        raise RuntimeError('Approved opening protected: use scripts/integrate_approved_opening.py; historical regeneration must not overwrite it')
     assert len(data)==depth
     path.write_text('WIDTH=8;\nDEPTH='+str(depth)+';\nADDRESS_RADIX=UNS;\nDATA_RADIX=HEX;\nCONTENT BEGIN\n'+
                     ''.join(f'{i} : {v:02X};\n' for i,v in enumerate(data))+'END;\n',encoding='ascii')

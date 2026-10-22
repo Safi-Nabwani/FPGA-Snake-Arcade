@@ -31,6 +31,8 @@ FONT_Y=[6+((2*y+1)*18)//28 for y in range(14)]
 
 
 def write_mif(path,width,values):
+    if path.name=='opening_supplied_atlas.mif' and (ROOT/'assets/jungle/approved_opening/manifest.json').exists():
+        raise RuntimeError('Approved opening protected: use scripts/integrate_approved_opening.py; historical regeneration must not overwrite it')
     path.write_text(f'WIDTH={width};\nDEPTH={len(values)};\nADDRESS_RADIX=UNS;\nDATA_RADIX=HEX;\nCONTENT BEGIN\n'+
         ''.join(f'{i} : {v:X};\n' for i,v in enumerate(values))+'END;\n',encoding='ascii')
 

@@ -1,0 +1,48 @@
+{
+  "project": "The Temple's Curse — opening title and start prompt assets",
+  "base_reference": "opening_640x480.png (user-supplied approved existing full opening reference)",
+  "design": "Approved title concept adapted to exact native atlas slots; start-prompt lettering remains legible, with themed ornament details",
+  "preview": "opening_640x480_preview.png",
+  "rgb_format": "RGB332, one byte per pixel, (R3 << 5) | (G3 << 2) | B2",
+  "rom_mif": "RTL/mifs/opening_supplied_atlas.mif",
+  "rom_width_bits": 8,
+  "rom_depth": 104476,
+  "regions": {
+    "title": {
+      "x": 264,
+      "y": 58,
+      "w": 264,
+      "h": 108,
+      "rom_start": 14880,
+      "rom_end_inclusive": 43391,
+      "stride": 264,
+      "png": "title_264x108.png",
+      "bin": "title_264x108.rgb332.bin",
+      "sha256_bin": "462c11e1b286cadbde9a0123fad80be25503f7ee13b8ef775eb7b79d9039578f",
+      "sha256_png": "11fc9d52add6869841bda2753e547c30c3c99578d7974ad01e713a4f28f5dbdc",
+      "pixel_count": 28512,
+      "changed_pixels_from_reference": 24896
+    },
+    "start_prompt": {
+      "x": 244,
+      "y": 414,
+      "w": 296,
+      "h": 34,
+      "rom_start": 94412,
+      "rom_end_inclusive": 104475,
+      "stride": 296,
+      "png": "start_prompt_296x34.png",
+      "bin": "start_prompt_296x34.rgb332.bin",
+      "sha256_bin": "f43bfcc49a7997a32a09c44f37e36debaf934b462a601dd0d96f9540e9ae7936",
+      "sha256_png": "e021b064377eeb574339a173bf31351752dd1a50e57fc1728a0bb0dd3b457bcc",
+      "pixel_count": 10064,
+      "changed_pixels_from_reference": 3844
+    }
+  },
+  "checks": {
+    "outside_two_regions_unchanged_vs_reference": true,
+    "all_patches_rgb332": true,
+    "patch_dimensions_exact": true
+  },
+  "notes": "PNG RGB channels are exact RGB332-expanded values (R,G 0/36/72/109/145/182/218/255; B 0/85/170/255). Binary files store raw ROM bytes in row-major order."
+}
