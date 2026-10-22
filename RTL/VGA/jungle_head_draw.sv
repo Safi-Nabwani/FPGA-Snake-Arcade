@@ -11,8 +11,9 @@ module jungle_head_draw (
     logic signed [11:0] dx, dy;
     logic valid, validD;
     logic [4:0] x, y;
+    logic [4:0] sourceX, sourceY;
     logic [3:0] spriteIndex;
-    logic [12:0] atlasAddress;
+    logic [9:0] atlasAddress;
     logic [8:0] spriteWord;
 
     always_comb begin
@@ -29,12 +30,19 @@ module jungle_head_draw (
             3'd3: spriteIndex = 4'd3;
             default: spriteIndex = 4'd0;
         endcase
-        atlasAddress = (spriteIndex * 13'd576) + (y * 24) + x;
+        sourceX=x; sourceY=y;
+        case(spriteIndex)
+            1: begin sourceX=y; sourceY=5'd23-x; end
+            2: begin sourceX=5'd23-x; sourceY=5'd23-y; end
+            3: begin sourceX=5'd23-y; sourceY=x; end
+            default: begin end
+        endcase
+        atlasAddress = (sourceY * 24) + sourceX;
     end
 
     lpm_rom #(
-        .LPM_WIDTH(9), .LPM_WIDTHAD(13), .LPM_NUMWORDS(8064),
-        .LPM_FILE("RTL/mifs/snake_variants/01_emerald_rgba9.mif"), .LPM_TYPE("LPM_ROM"),
+        .LPM_WIDTH(9), .LPM_WIDTHAD(10), .LPM_NUMWORDS(576),
+        .LPM_FILE("RTL/mifs/snake_variants/emerald_head_base_rgba9.mif"), .LPM_TYPE("LPM_ROM"),
         .LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
         .AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
         .INTENDED_DEVICE_FAMILY("Cyclone V")

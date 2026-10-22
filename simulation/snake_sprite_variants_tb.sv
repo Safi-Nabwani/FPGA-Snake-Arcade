@@ -27,6 +27,22 @@ module snake_emerald_production_tb;
 
     integer checks = 0;
     bit testPassed = 0;
+    function automatic integer compactAddress(input integer index);
+        integer x,y,b;
+        begin
+            x=LOCAL_X;y=LOCAL_Y;b=0;
+            case(index)
+                1,11:begin x=LOCAL_Y;y=23-LOCAL_X;end
+                2,12:begin x=23-LOCAL_X;y=23-LOCAL_Y;end
+                3,8,13:begin x=23-LOCAL_Y;y=LOCAL_X;end
+                9:begin x=LOCAL_Y;y=23-LOCAL_X;end
+            endcase
+            case(index)
+                5:b=1;6,8:b=2;7,9:b=3;10,11,12,13:b=4;
+            endcase
+            compactAddress=b*576+y*24+x;
+        end
+    endfunction
 
     jungle_head_draw head (
         clk, resetN, headPixelX, headPixelY, headTopLeftX, headTopLeftY,
@@ -61,7 +77,7 @@ module snake_emerald_production_tb;
             headPixelY = headTopLeftY + LOCAL_Y;
             #1;
             check(head.spriteIndex == expectedIndex, "head direction selects expected sprite");
-            check(head.atlasAddress == expectedIndex * 576 + LOCAL_ADDRESS,
+            check(head.atlasAddress == compactAddress(expectedIndex),
                   "head atlas address is sprite*576+y*24+x");
             settle();
             check(head.spriteWord[8] == 1'b1, "head center pixel is opaque");
@@ -93,7 +109,7 @@ module snake_emerald_production_tb;
                   "body test pixel resolves to first visible segment");
             check(body.spriteIndex == expectedIndex, "body connectivity selects expected sprite");
             check(body.address == LOCAL_ADDRESS, "body local address remains y*24+x");
-            check(body.atlasAddress == expectedIndex * 576 + LOCAL_ADDRESS,
+            check(body.atlasAddress == compactAddress(expectedIndex),
                   "body atlas address is sprite*576+y*24+x");
             settle();
             check(body.spriteWord[8] == 1'b1, "body center pixel is opaque");
@@ -120,7 +136,7 @@ module snake_emerald_production_tb;
             check(body.insideBody && body.selectedSegment == 0,
                   "minimum-length snake resolves its only body segment");
             check(body.spriteIndex == expectedIndex, "tail direction selects expected sprite");
-            check(body.atlasAddress == expectedIndex * 576 + LOCAL_ADDRESS,
+            check(body.atlasAddress == compactAddress(expectedIndex),
                   "tail atlas address is in range and aligned");
             settle();
             check(body.spriteWord[8] == 1'b1, "tail center pixel is opaque");

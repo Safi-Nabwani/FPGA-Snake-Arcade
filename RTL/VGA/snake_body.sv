@@ -79,7 +79,9 @@ logic [TRAIL_COUNT_WIDTH-1:0] validTrailSamples;
 logic insideBody;
 
 logic [9:0] address;
-logic [12:0] atlasAddress;
+logic [11:0] atlasAddress;
+logic [4:0] visualX, visualY, sourceX, sourceY;
+logic [2:0] baseSprite;
 logic [8:0] spriteWord;
 logic [3:0] spriteIndex;
 localparam int SELECT_INDEX_WIDTH = (MAX_SEGMENTS > 1) ? $clog2(MAX_SEGMENTS) : 1;
@@ -95,8 +97,8 @@ logic selfCollisionHit;
 //------------- Emerald Body MIF ROM -----------
 
 lpm_rom #(
-	.LPM_WIDTH(9), .LPM_WIDTHAD(13), .LPM_NUMWORDS(8064),
-	.LPM_FILE("RTL/mifs/snake_variants/01_emerald_rgba9.mif"), .LPM_TYPE("LPM_ROM"),
+	.LPM_WIDTH(9), .LPM_WIDTHAD(12), .LPM_NUMWORDS(2880),
+	.LPM_FILE("RTL/mifs/snake_variants/emerald_body_bases_rgba9.mif"), .LPM_TYPE("LPM_ROM"),
 	.LPM_ADDRESS_CONTROL("REGISTERED"), .LPM_OUTDATA("UNREGISTERED"),
 	.AUTO_CARRY_CHAINS("ON"), .AUTO_CASCADE_BUFFERS("ON"),
 	.INTENDED_DEVICE_FAMILY("Cyclone V")
@@ -359,7 +361,23 @@ always_comb begin
             selectedTowardTailX, selectedTowardTailY
         );
     end
-    atlasAddress = (spriteIndex * 13'd576) + address;
+    // Compute local coordinates directly: no division/modulo of the old address.
+    visualX = insideBody ? (pixelX-selectedCurrentX) : 5'd0;
+    visualY = insideBody ? (pixelY-selectedCurrentY) : 5'd0;
+    sourceX=visualX; sourceY=visualY; baseSprite=0;
+    case(spriteIndex)
+        5: baseSprite=1; // horizontal remains a distinct exact base
+        6: baseSprite=2;
+        7: baseSprite=3;
+        8: begin baseSprite=2; sourceX=5'd23-visualY; sourceY=visualX; end
+        9: begin baseSprite=3; sourceX=visualY; sourceY=5'd23-visualX; end
+        10: baseSprite=4;
+        11: begin baseSprite=4; sourceX=visualY; sourceY=5'd23-visualX; end
+        12: begin baseSprite=4; sourceX=5'd23-visualX; sourceY=5'd23-visualY; end
+        13: begin baseSprite=4; sourceX=5'd23-visualY; sourceY=visualX; end
+        default: begin end
+    endcase
+    atlasAddress = (baseSprite * 12'd576) + (sourceY * 24) + sourceX;
 end
 
 //------------- Self Collision Logic -----------
