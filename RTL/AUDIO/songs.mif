@@ -82,14 +82,12 @@ CONTENT BEGIN
 401: 5820;
 [402..4FF]: 0000;
 
--- Notes for song hit_Track_0.txt
-500: 0820;
-501: 4460;
-502: 7440;
-503: 0820;
-504: 4460;
-505: 7440;
-[506..5FF]: 0000;
+-- Ruby Magic Pickup: G5, C6, D6, G6; durations 2,3,2,5; no gaps.
+500: 7440;
+501: 0860;
+502: 2840;
+503: 78A0;
+[504..5FF]: 0000;
 
 -- Notes for song CrankyKongsThem_Track_3.txt
 [600..601]: 04C0;
