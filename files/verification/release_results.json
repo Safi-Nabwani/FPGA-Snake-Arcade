@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-23",
+  "quartus": "Prime Lite 17.0.0 Build 595",
+  "revision": "TheTemplesCurse",
+  "top": "TOP_VGA_DEMO",
+  "device": "5CSXFC6D6F31C6",
+  "history_parent": "56021540393328b36c17cd282b904eafd60b778e",
+  "source_inputs": 82,
+  "soffile": "TheTemplesCurse.sof",
+  "sof_bytes": 6690390,
+  "sof_sha256": "052EB75A1D7FC9ABB9CD436F8AC52384A4548F7B2D33EC4B68568963FBE70379",
+  "resources": {
+    "dsp": 0,
+    "registers": 9970,
+    "pll": 1,
+    "m10ks": 421,
+    "physical_pins": 82,
+    "virtual_pins": 9,
+    "m10ks_available": 553,
+    "alms": 13403,
+    "memory_bits": 3326972
+  },
+  "timing": {
+    "setup_ns": 4.506,
+    "baseline_hold_ns": 0.135,
+    "hold_ns": 0.135,
+    "minimum_pulse_width_ns": 0.793,
+    "all_tns_zero": true,
+    "baseline_setup_ns": 4.506
+  },
+  "stage_errors": {
+    "fit": 0,
+    "sta": 0,
+    "asm": 0,
+    "map": 0
+  },
+  "stage_warnings": {
+    "fit": 89,
+    "sta": 51,
+    "asm": 0,
+    "map": 246
+  },
+  "flow_note": "Map and fit executed once. STA command-line option rejected before analysis; removed unsupported option and completed only STA/assembler. No refit or timing relaxation.",
+  "pin_audit": "AUDIO_PIN_SAFETY_PASS output_files\\TheTemplesCurse.pin: no physical debug ports; AG30 input; all six codec pins unchanged",
+  "tests": {
+    "victory_checks": 1056,
+    "sprite_rotation_checks": 34681,
+    "initial_length_checks": 3289233,
+    "cursed_production_rate_checks": 20830027,
+    "keypad_checks": 142,
+    "sprite_pixels_exact": 8064,
+    "cursed_accelerated_checks": 40467,
+    "emerald_selection_checks": 83
+  },
+  "timing_summary": "------------------------------------------------------------\r\nTimeQuest Timing Analyzer Summary\r\n------------------------------------------------------------\r\n\r\nType  : Slow 1100mV 85C Model Setup 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 4.506\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 85C Model Hold 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 0.294\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 85C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'\r\nSlack : 0.793\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'\r\nSlack : 9.670\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 85C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 14.631\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 0C Model Setup 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 4.740\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 0C Model Hold 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 0.253\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 0C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'\r\nSlack : 0.793\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'\r\nSlack : 9.673\r\nTNS   : 0.000\r\n\r\nType  : Slow 1100mV 0C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 14.608\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 85C Model Setup 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 15.515\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 85C Model Hold 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 0.160\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 85C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'\r\nSlack : 0.793\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'\r\nSlack : 9.336\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 85C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 14.752\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 0C Model Setup 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 17.032\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 0C Model Hold 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 0.135\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 0C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'\r\nSlack : 0.793\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'\r\nSlack : 9.286\r\nTNS   : 0.000\r\n\r\nType  : Fast 1100mV 0C Model Minimum Pulse Width 'inst7|clk_31p5_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'\r\nSlack : 14.753\r\nTNS   : 0.000\r\n\r\n------------------------------------------------------------\r\n",
+  "limitations": [
+    "Incomplete existing external-I/O constraints",
+    "No physical FPGA testing",
+    "Optional vendor PLL gate-level simulation model absent; synthesis and retained standalone tests independent of it"
+  ]
+}

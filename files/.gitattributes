@@ -1,0 +1,12 @@
+# Keep checksum-protected production inputs byte-exact on every checkout.
+RTL/** -text
+CLK_31P5* -text
+CLK_31P5/** -text
+constraints/** -text
+TheTemplesCurse.qpf -text
+TheTemplesCurse.qsf -text
+DE10_Standard_Audio.sdc -text
+*.QXP -text
+*.qxp -text
+*.vwf -text
+

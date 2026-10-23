@@ -1,64 +1,62 @@
 # The Temple's Curse
 
-A Jungle Temple-themed Snake arcade game implemented in **SystemVerilog and Quartus block diagrams** on the **Terasic DE10-Standard (Cyclone V)**.
+Jungle Temple-themed Snake for the **Terasic DE10-Standard**, Cyclone V **5CSXFC6D6F31C6**. Originally developed for Electrical Engineering Lab A1 at the Technion; implemented in SystemVerilog and Quartus block diagrams.
 
-The project was developed as part of Electrical Engineering Lab A1 at the Technion and integrates VGA graphics, keyboard input, audio feedback, scoring, collision detection, and multiple gameplay mechanics.
+## Play
 
-## Features
+- Numpad **8 / 4 / 6 / 5**: Up / Left / Right / Down.
+- **Enter** (main or numpad): Start / Restart. KEY0: hardware reset.
+- Reach **90 points or more** to win. Initial snake: **14 body nodes + head**; maximum **63 body nodes + head**.
+- Ruby: +1 score/+1 node. Sapphire: +3 score/−3 nodes (minimum one). Cursed: −5 score/+5 nodes; fatal at score ≤5. Existing speed changes, audio priorities and collision rules are preserved.
+- Approved Jungle Temple floor/ruins, vertical HUD, Emerald Serpent, opening and results artwork remain unchanged. Sprite storage uses six exact base sprites with rotations.
 
-- 640×480 VGA graphics; 20×18 arena with 24×24-pixel tiles
-- Keyboard-controlled snake movement
-- Snake growth and self-collision detection
-- Border collision detection
-- Score and high-score tracking
-- Reach **90 points or more** to win
-- Initial length: **14 body nodes + head**; maximum: **63 body nodes + head**
-- Three relic types:
-  - Ruby: +1 score, +1 body node
-  - Sapphire: +3 score, −3 body nodes (minimum length: 1)
-  - Cursed: −5 score, +5 body nodes; fatal when collected at a score of 5 or less
-- Audio feedback and sound effects
-- Variable game speed
-- ROM/MIF-based graphics
-- Jungle Temple floor, ruins and vertical HUD with independent relic counters
-- Optimized Emerald Serpent sprites with pixel-exact rotation-based ROM sharing
-- Updated opening title and Enter start/restart instructions, plus Victory/Defeat reports
+## Open and Rebuild
 
-## Controls
+Open **`files/TheTemplesCurse.qpf`** in **Quartus Prime Lite 17.0.0 Build 595**, with Cyclone V device support. Revision: `TheTemplesCurse`; internal top entity remains `TOP_VGA_DEMO`. All project-relative paths are based at `files/`.
 
-Numpad **8 / 4 / 6 / 5**: Up / Left / Right / Down.
-**Enter** (main or Numpad): Start / Restart. Numpad 2 is no longer Down.
-The opening guide and result-screen instructions reflect these controls.
+From this directory:
 
-## Hardware & Tools
+```powershell
+powershell -File files/scripts/build_production.ps1 -Python "C:\path\to\python.exe"
+```
 
-- Terasic DE10-Standard, Cyclone V `5CSXFC6D6F31C6`
-- SystemVerilog
-- Intel Quartus Prime Lite 17.0.0 Build 595 (verified production toolchain)
-- ModelSim
-- SignalTap
-- VGA display
-- PS/2 keyboard
-- Audio output
+Python requires **Pillow 12+** for exact supplied-PNG checks. Override `-QuartusBin` if Quartus is not at `C:\intelFPGA_lite\17.0\quartus\bin64`. The script validates input hashes, runs one quiet map/fit/STA/assembler flow, checks positive timing and fitted pin safety, then places **`TheTemplesCurse.sof`** at this root. Logs are under ignored `files/db/production_build/`; resource/timing reports under ignored `files/output_files/`.
 
-## Project Structure
+Do not regenerate vendor IP or change timing/pin assignments to match a different tool version. `files/verification/source_sha256.json` protects active HDL, approved MIF/audio data, PLL and board resources. The known-good hardware pin mapping is retained as structured audit data, not a historical project backup.
 
-- `RTL/VGA` — game logic and VGA rendering
-- `RTL/AUDIO` — audio controller and sound effects
-- `RTL/KEYBOARDX` — keyboard interface
-- `RTL/Seg7` — seven-segment display logic
-- `RTL/mifs` — graphics ROMs and collision masks; audio notes are in `RTL/AUDIO/songs.mif`
-- `Lab1Demo.qpf` / `Lab1Demo.qsf` — active project/revision and board assignments; top-level entity: `TOP_VGA_DEMO`
-- `DE10_Standard_Audio.sdc` — active timing constraints; `constraints` contains supporting pin Tcl and a separate historical SDC
-- `scripts` / `simulation` — asset/verification tools and ModelSim testbenches
-- `assets/jungle` — approved artwork, previews and concept/reference material
+## Focused Verification
 
-## Verification
+Run from **`files/`**, not the repository root:
 
-Existing ModelSim regressions cover gameplay, collisions, relic effects, length limits, controls and rendering. The frozen production Quartus build passed with positive constrained setup/hold margins and the AG30/virtual-debug pin-safety audit. External-I/O constraints remain incomplete.
+```powershell
+python -B scripts/verify_production.py
+vsim -c -do simulation/keypad_remap.do
+vsim -c -do simulation/winning_score.do
+vsim -c -do simulation/sprite_rotation.do
+vsim -c -do simulation/snake_initial_length.do
+```
 
-VGA refresh caveat: although the intended display specification is 640×480 @ 60 Hz, the unchanged 31.5 MHz PLL and legacy raster counters imply approximately **72.58 Hz**, as documented in [PRECHANGE_BASELINE.md](PRECHANGE_BASELINE.md). This is not a verified 60 Hz implementation.
+The Python check generates the two ROM oracles needed under ignored `db/`. Retained length-capacity and audio test runners provide additional targeted checks. No old project directory, ignored rollback data or historical Git commit is needed by these tools. `files/assets/jungle/` contains only approved source/reference art needed to maintain the current appearance; active ROMs are under `files/RTL/mifs/`, and audio notes under `files/RTL/AUDIO/songs.mif`.
 
-Build/simulation verification is separate from physical FPGA approval: no new board or listening tests are claimed here. See [PRODUCTION_RELEASE_FREEZE_REPORT.md](PRODUCTION_RELEASE_FREEZE_REPORT.md) for the production SOF checksum, release snapshot and reproducibility limitations, and [CURSED_RELIC_AUDIO_FIX_REPORT.md](CURSED_RELIC_AUDIO_FIX_REPORT.md) for the latest audio test status.
+## Program
 
-Keep required vendor IP, PLL files, MIFs and timing constraints intact. Some historical generators/tests require preserved local fixtures; fresh-checkout reproducibility has not yet been validated.
+Open Quartus Programmer, select **USB-Blaster II**, choose JTAG, add root **`TheTemplesCurse.sof`**, check Program/Configure and press Start. Reset with KEY0, then start with Enter. Physical display/audio acceptance remains the user's responsibility; test audio initially at low volume. No board programming is performed by the build tools.
+
+## Known Limitations and Release Verification
+
+Build/simulation checks are not physical hardware approval. Existing external-I/O constraints are incomplete, despite positive internal setup/hold margins. VGA is 640×480 with a 20×18 arena of 24×24 tiles; the unchanged 31.5 MHz PLL and 833×521 raster imply approximately **72.58 Hz**, not verified 60 Hz.
+
+The vendor's historical `CLK_31P5.sip`/`.spd` mention an unavailable optional `CLK_31P5_sim/CLK_31P5.vo`. It is not used for synthesis or retained standalone tests. Full vendor-PLL gate-level simulation would need that optional model generated by the vendor tools; do not change the working PLL to address this metadata warning.
+
+Source history is preserved in this independent Git repository; old committed experiments remain recoverable through history but are absent from the working tree. No link, alternate-object store or remote pointing at the original project is required.
+
+### Isolated Release — 2026-10-23
+
+- One map/fit flow; STA and assembler completed afterward. An unsupported STA command-line option was corrected without repeating map/fit. All four completed stages report **zero design errors**; warnings: map 246, fit 89, STA 51, assembler 0.
+- **13,403 ALMs, 9,970 registers, 421/553 M10Ks, 3,326,972 memory bits** — identical to the verified production baseline. 82 physical pins, nine virtual pins, one PLL, no DSPs.
+- All four timing corners pass: worst setup **+4.506 ns**, worst hold **+0.135 ns**, minimum pulse-width slack **+0.793 ns**, all TNS zero. Worst setup/hold margins match baseline.
+- Final audio/pin audit passes against the retained known-good mapping: AG30 remains reserved input with weak pull-up; all nine graphics-debug outputs remain virtual; codec, PS/2 and all other non-debug physical pin assignments/directions/I/O standards are unchanged.
+- Focused tests pass: keypad **142** checks; victory **1,056**; sprite rotations **34,681**, Emerald selection **83**; initial length **3,289,233**; Cursed audio **40,467** accelerated and **20,830,027** production-rate checks, including termination/idle. Existing sprite-test force warnings remain. All **8,064** original nine-bit sprite pixels and approved opening PNG/binary data match exactly.
+- Final **`TheTemplesCurse.sof`**: 6,690,390 bytes. SHA-256: **`052EB75A1D7FC9ABB9CD436F8AC52384A4548F7B2D33EC4B68568963FBE70379`**.
+
+Machine-readable results: `files/verification/release_results.json`. Generated build databases, test workspaces, logs and intermediate outputs were removed after verification; rerun the documented tools to regenerate them. No physical FPGA testing is claimed.
