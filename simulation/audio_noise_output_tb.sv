@@ -24,7 +24,7 @@ module audio_noise_output_tb;
     keyPad_decoder keyboard(clk,resetN,keyCode,make,brakee,numberKey,plus,back,slash,del,enter,minus,star,num,key,keyValid);
     game_controller game(.clk(clk),.resetN(resetN),.startOfFrame(1'b0),.snakeHead_DR(1'b0),
         .snakeSelfCollision(1'b0),.border_DR(1'b0),.obstacle_DR(1'b0),.redApple_DR(1'b0),
-        .blueApple_DR(1'b0),.blackApple_DR(1'b0),.score_Low(4'd0),.score_High(4'd0),.key_5(numberKey[5]),
+        .blueApple_DR(1'b0),.blackApple_DR(1'b0),.score_Low(4'd0),.score_High(4'd0),.key_5(enter),
         .gameStarted(gStarted),.gameStartPulse(gStart),.gameEndPulse(gEnd),.gameOverPulse(gOver),
         .gameWonPulse(gWon),.redAppleHitPulse(gRed),.blueAppleHitPulse(gBlue),.blackAppleHitPulse(gBlack));
     sound_effect_controller selector(clk,resetN,events[1],events[5],events[6],events[2],events[3],events[4],events[0],start,requestID);
@@ -91,7 +91,7 @@ module audio_noise_output_tb;
     endtask
     initial begin
         integer codes[0:4];
-        codes[0]='h072;codes[1]='h06b;codes[2]='h073;codes[3]='h074;codes[4]='h075;
+        codes[0]='h073;codes[1]='h06b;codes[2]='h05a;codes[3]='h074;codes[4]='h075;
         resetAudio(2);
         // Each sound-producing physical keypad key immediately after async
         // reset, at several sub-cycle reset-release offsets.

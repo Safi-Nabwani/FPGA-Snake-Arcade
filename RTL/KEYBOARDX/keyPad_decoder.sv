@@ -60,6 +60,7 @@ logic [0:NUM_OF_KEYS-1][8:0] KEYS_ENCODING = {
 //------------- Internal Signals -----------
 
 logic [NUM_OF_KEYS-1:0] keyIsPressed;
+logic mainEnterPressed;
 
 //------------- Key Press / Release Logic -----------
 
@@ -69,6 +70,7 @@ begin
 
 		key <= 4'd0;
 		keyIsPressed <= '0;
+		mainEnterPressed <= 1'b0;
 		keyIsValid <= 1'b0;
 
 	end
@@ -77,6 +79,12 @@ begin
 
 		// keyIsValid is a one-clock pulse
 		keyIsValid <= 1'b0;
+		// Main Enter is 5A; keypad Enter is E0 5A (keyCode 15A).
+		// Track them independently so either key can remain held.
+		if (keyCode == 9'h05A) begin
+			if (make) mainEnterPressed <= 1'b1;
+			if (brakee) mainEnterPressed <= 1'b0;
+		end
 
 		for (int i = 0; i < NUM_OF_KEYS; i++) begin
 
@@ -90,8 +98,8 @@ begin
 					if (i < 10)
 						key <= i[3:0];
 
-					// valid movement keys: 2, 4, 6, 8
-					if ((i == 2) || (i == 4) || (i == 6) || (i == 8))
+					// Movement keys: keypad 5 (Down), 4, 6, 8.
+					if ((i == 5) || (i == 4) || (i == 6) || (i == 8))
 						keyIsValid <= 1'b1;
 
 				end
@@ -119,7 +127,7 @@ assign plus  = keyIsPressed[10];
 assign Back  = keyIsPressed[11];
 assign slash = keyIsPressed[12];
 assign del   = keyIsPressed[13];
-assign enter = keyIsPressed[14];
+assign enter = keyIsPressed[14] | mainEnterPressed;
 assign minus = keyIsPressed[15];
 assign star  = keyIsPressed[16];
 assign num   = keyIsPressed[17];

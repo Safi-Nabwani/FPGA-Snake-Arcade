@@ -41,7 +41,8 @@ module game_controller (
 
 logic appleHitFlag;	// We dont want to send a pulse more than once in the same frame
 
-// Decoder supplies a held keypad-5 level (scan073). Typematic make events
+// Legacy key_5 port now receives held Enter (main 05A or keypad E0 5A).
+// Typematic make events
 // must not restart a finished game until the player releases and presses again.
 logic key5HeldD;
 wire startPressed = key_5 && !key5HeldD;

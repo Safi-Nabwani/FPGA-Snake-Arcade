@@ -15,7 +15,7 @@ module results_reports_tb;
     wire [3:0] sl,sh,hl,hh;
     wire [11:0] ruby,sapphire,cursed;
     game_controller game(clk,resetN,sof,1'b1,selfHit,wall,1'b0,redDR,blueDR,blackDR,
-        sl,sh,keys[5],running,startEvent,endEvent,lost,won,redEvent,blueEvent,blackEvent);
+        sl,sh,enterKey,running,startEvent,endEvent,lost,won,redEvent,blueEvent,blackEvent);
     appleCounter score(clk,resetN,startEvent,redEvent,blueEvent,blackEvent,sl,sh);
     highscoreComp high(clk,resetN,endEvent,sl,sh,hl,hh);
     relic_collection_counters counts(clk,resetN,startEvent,redEvent,blueEvent,blackEvent,ruby,sapphire,cursed);
@@ -104,7 +104,7 @@ module results_reports_tb;
         px2=px1;py2=py1;px1=nx;py1=ny;
     endtask
     task automatic keyEvent(input bit pressed);
-        @(negedge clk);code=9'h073;makeKey=pressed;breakKey=!pressed;
+        @(negedge clk);code=9'h05A;makeKey=pressed;breakKey=!pressed;
         @(negedge clk);makeKey=0;breakKey=0;
         repeat(5)@(negedge clk);
     endtask
@@ -148,7 +148,7 @@ module results_reports_tb;
         end
         px=1023;py=1023;repeat(5)@(negedge clk);
         keyEvent(1);
-        check(running,"keypad5 starts game");
+        check(running,"Enter starts game");
         for(i=0;i<5;i++)collect(1);
         collect(3); // lethal at5: score0, Ruby5, Cursed1, original highscore5.
         check(!running && {sh,sl}==0 && ruby==5 && cursed==1 && {hh,hl}==5,"fatal Cursed applies existing score/count/highscore semantics");
@@ -186,7 +186,7 @@ module results_reports_tb;
         repeat(6)@(negedge clk);
         check(display.menuActive && display.results.resultState==0 && !display.results.statisticsReady,
               "hardware reset clears result snapshot and restores original opening");
-        $display("RESULTS_V3_REPORTS_PASS:%0d checks; six full frames; native full-art lossless tiles/alpha/font/DR/mux; dynamic values; fatal Cursed;92 victory;keypad5;unchanged HUD/opening",checks);
+        $display("RESULTS_V3_REPORTS_PASS:%0d checks; six full frames; native full-art lossless tiles/alpha/font/DR/mux; dynamic values; fatal Cursed;92 victory;Enter restart;unchanged HUD/opening",checks);
         testPassed=1;$finish;
     end
     initial begin #40000000;$fatal(1,"results-report test timeout");end

@@ -15,14 +15,14 @@ module opening_screen_tb;
     wire [3:0] sl,sh,hl,hh;
     wire [11:0] ruby,sapphire,cursed;
     game_controller game(clk,resetN,sof,1'b1,selfHit,wall,1'b0,redDR,blueDR,blackDR,
-        sl,sh,keys[5],running,startEvent,endEvent,lost,won,redEvent,blueEvent,blackEvent);
+        sl,sh,enterKey,running,startEvent,endEvent,lost,won,redEvent,blueEvent,blackEvent);
     appleCounter score(clk,resetN,startEvent,redEvent,blueEvent,blackEvent,sl,sh);
     highscoreComp high(clk,resetN,endEvent,sl,sh,hl,hh);
     relic_collection_counters counts(clk,resetN,startEvent,redEvent,blueEvent,blackEvent,ruby,sapphire,cursed);
     wire signed [10:0] speed,hx,hy;
     wire [2:0] direction;
     speed_controller velocity(clk,resetN,startEvent,redEvent,blueEvent,blackEvent,speed);
-    snake_head head(clk,resetN,sof,keys[8],keys[6],keys[4],keys[2],running,speed,hx,hy,direction);
+    snake_head head(clk,resetN,sof,keys[8],keys[6],keys[4],keys[5],running,speed,hx,hy,direction);
     logic [10:0] px=1023,py=1023;
     wire bodyDR,bodySelf;
     wire [7:0] bodyRGB;
@@ -127,10 +127,10 @@ module opening_screen_tb;
         $display("OPENING_RENDER_PASS:238080 supplied-menu pixels +69120 existing-HUD pixels; aligned ROM/DR/mux;menu freezes motion/events");
         wall=0;selfHit=0;redDR=0;blueDR=0;blackDR=0;sof=0;
         keyEvent(9'h075,0);
-        keyEvent(9'h073,1);
-        check(running && startCount==1 && !display.menuActive && !display.menuModeDD,"keypad073 starts once and selects gameplay");
-        repeat(5)keyEvent(9'h073,1); // Typematic make events with no break.
-        check(startCount==1,"held5 typematic makes do not retrigger start");
+        keyEvent(9'h05A,1);
+        check(running && startCount==1 && !display.menuActive && !display.menuModeDD,"Enter starts once and selects gameplay");
+        repeat(5)keyEvent(9'h05A,1); // Typematic make events with no break.
+        check(startCount==1,"held Enter typematic makes do not retrigger start");
         for(i=0;i<8;i++)collect(1);
         check({sh,sl}==8 && ruby==12'h008 && length==22 && speed==154,"Ruby unchanged score/length/speed");
         collect(2);
@@ -138,28 +138,28 @@ module opening_screen_tb;
         collect(3);
         check({sh,sl}==6 && cursed==1 && length==24 && speed==159,"Cursed -5score/+5length/+10speed");
         wall=1;repeat(8)@(negedge clk);wall=0;
-        check(!running && startCount==1 && {hh,hl}==6,"held5 cannot auto-restart defeat; high score captured");
+        check(!running && startCount==1 && {hh,hl}==6,"held Enter cannot auto-restart defeat; high score captured");
         sharedResult();
-        keyEvent(9'h073,0);keyEvent(9'h073,1);
+        keyEvent(9'h05A,0);keyEvent(9'h05A,1);
         check(running && startCount==2 && {sh,sl,ruby,sapphire,cursed}==0 && {hh,hl}==6 && length==14 && speed==130,
             "fresh press restarts, clears per-game state, preserves high score and gameplay scene");
         for(i=0;i<90;i++)collect(1);
         repeat(6)@(negedge clk);
         check(!running && startCount==2 && {hh,hl}==8'h90 && ruby==12'h090,"win90, high score, held-key suppression");
         sharedResult();
-        keyEvent(9'h073,0);keyEvent(9'h073,1);
+        keyEvent(9'h05A,0);keyEvent(9'h05A,1);
         check(running && startCount==3 && {hh,hl}==8'h90 && ruby==0,"victory local restart preserves high score");
-        // All four original keypad directions, with clean starts; no decoder change.
+        // Remapped keypad directions, with clean starts.
         for(d=0;d<4;d++)begin
             @(negedge clk);resetN=0;repeat(3)@(negedge clk);resetN=1;
             repeat(6)@(negedge clk);
             check(!running && display.menuActive && {hh,hl}==0,"hardware reset returns MENU and original high-score reset");
-            keyEvent(9'h073,1);keyEvent(9'h073,0);
+            keyEvent(9'h05A,1);keyEvent(9'h05A,0);
             case(d)
                 0:keyEvent(9'h075,1);
                 1:keyEvent(9'h074,1);
                 2:keyEvent(9'h06B,1);
-                3:keyEvent(9'h072,1);
+                3:keyEvent(9'h073,1);
             endcase
             for(j=0;j<22;j++)frame();
             case(d)
@@ -169,7 +169,7 @@ module opening_screen_tb;
                 3:check(hy>240 && hx==384,"unchanged DOWN control");
             endcase
         end
-        $display("OPENING_STATE_PASS:keypad073/typematic/release;four directions;menu/play/reset;score/highscore/relics/length/speed;shared result snapshots");
+        $display("OPENING_STATE_PASS:Enter/typematic/release;keypad8465;menu/play/reset;score/highscore/relics/length/speed;shared result snapshots");
         $display("OPENING_SCREEN_PASS:%0d checks;no physical FPGA verification",checks);
         testPassed=1;$finish;
     end
