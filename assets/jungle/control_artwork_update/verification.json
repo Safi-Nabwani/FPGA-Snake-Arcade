@@ -1,0 +1,68 @@
+{
+  "opening_changed_pixels": 11296,
+  "victory_changed_pixels": 1259,
+  "defeat_changed_pixels": 1038,
+  "unique_result_tiles": 17066,
+  "rom_dimensions_unchanged": true,
+  "outside_instruction_boxes_unchanged": true,
+  "all_result_alpha_unchanged": true,
+  "opening_boxes_right_local": [
+    [
+      76,
+      250,
+      96,
+      270
+    ],
+    [
+      44,
+      280,
+      64,
+      300
+    ],
+    [
+      108,
+      280,
+      128,
+      300
+    ],
+    [
+      76,
+      309,
+      96,
+      329
+    ],
+    [
+      22,
+      338,
+      158,
+      372
+    ],
+    [
+      106,
+      417,
+      392,
+      446
+    ]
+  ],
+  "results_boxes_panel_local": {
+    "victory": [
+      58,
+      389,
+      230,
+      404
+    ],
+    "defeat": [
+      65,
+      378,
+      224,
+      391
+    ]
+  },
+  "text": [
+    "8 UP  5 DOWN",
+    "4 LEFT 6 RIGHT",
+    "ENTER START/RESTART",
+    "PRESS ENTER TO START",
+    "PRESS ENTER TO RESTART"
+  ]
+}
