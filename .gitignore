@@ -18,3 +18,10 @@
 /simulation/*.vcd
 /transcript
 /vsim.wlf
+
+# Python bytecode caches (keep source and verification scripts).
+__pycache__/
+*.pyc
+
+# Per-user Quartus workspace state (not project configuration).
+*.qws
