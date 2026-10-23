@@ -2,6 +2,8 @@
 
 Jungle Temple-themed Snake for the **Terasic DE10-Standard**, Cyclone V **5CSXFC6D6F31C6**. Originally developed for Electrical Engineering Lab A1 at the Technion; implemented in SystemVerilog and Quartus block diagrams.
 
+![The Temple's Curse — opening screen](images/opening.png)
+
 ## Play
 
 - Numpad **8 / 4 / 6 / 5**: Up / Left / Right / Down.
@@ -9,6 +11,24 @@ Jungle Temple-themed Snake for the **Terasic DE10-Standard**, Cyclone V **5CSXFC
 - Reach **90 points or more** to win. Initial snake: **14 body nodes + head**; maximum **63 body nodes + head**.
 - Ruby: +1 score/+1 node. Sapphire: +3 score/−3 nodes (minimum one). Cursed: −5 score/+5 nodes; fatal at score ≤5. Existing speed changes, audio priorities and collision rules are preserved.
 - Approved Jungle Temple floor/ruins, vertical HUD, Emerald Serpent, opening and results artwork remain unchanged. Sprite storage uses six exact base sprites with rotations.
+
+## Visuals
+
+These are reproducible renders from the active RTL compositor and MIFs, using the project's RGB332 preview palette. Native 640×480 frames are enlarged exactly 3× to **1920×1440**, with nearest-neighbor scaling and lossless PNG compression. They are **not hardware photographs or a recorded playthrough**: deterministic test inputs drive the real movement, score/relic counters and terminal-state logic.
+
+### Gameplay
+
+![Active arena, sidebar and Emerald Serpent](images/gameplay.png)
+
+### Victory
+
+![Victory report with dynamic relic statistics](images/victory.png)
+
+### Defeat
+
+![Defeat report with dynamic score and relic statistics](images/defeat.png)
+
+To reproduce all four images, run `python -B files/scripts/export_readme_images.py` from this repository with Pillow and ModelSim installed (`--vsim` accepts the simulator executable path). Only the screenshot testbench runs; no Quartus build or hardware programming is required. It checks the approved opening's RGB332 pixels, HUD/report digits, transparency and unchanged production inputs before exporting the images.
 
 ## Open and Rebuild
 
